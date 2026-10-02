@@ -16,7 +16,8 @@ Câu hỏi môn chấm: hệ thống phục vụ *ai*, cần *đáp ứng gì*, 
 - Schema bảng gold → `joblens`.
 
 **Quy tắc riêng:**
-- **Chỉ đọc gold** qua Trino, hoặc qua gold mẫu khi chạy local. Không ghi bảng hay topic nào.
+- **Chỉ đọc gold** qua Trino (hoặc gold mẫu khi chạy local) và gọi API tìm kiếm `schemas/api/search.v1.yaml`; khi không có `JOBLENS_SEARCH_URL` thì lùi về tìm bằng Trino.
+- Topic duy nhất app được ghi là `app.alert_subscriptions.v1`. App đọc `alerts.job_match.v1` để gửi cảnh báo UC006 (ADR 0001 D4b). Không ghi bảng nào.
 - **Số đo hiệu năng của Big Data** chỉ được *trích* làm bằng chứng NFR, kèm tag `report-bd-v1`, không phân tích lại (R4).
 - **Sơ đồ** vẽ theo ký pháp UML của môn này. Không dán sơ đồ Helm hay sơ đồ luồng dữ liệu của Big Data (R5).
 - **Human-AI collaboration là một phần được chấm.** Mỗi lần AI hỗ trợ phân tích hay thiết kế (nháp user story, rà NFR, gợi ý sơ đồ…) phải ghi **thêm** vào `docs/ai-log.md`: ngày, công cụ, việc AI làm, phần người chỉnh, người kiểm tra (để `<người kiểm tra>` nếu chưa có).

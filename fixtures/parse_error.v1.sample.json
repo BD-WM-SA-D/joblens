@@ -1,0 +1,13 @@
+[
+  {
+    "schema_version": "parse_error.v1",
+    "source": "synthetic",
+    "url": "https://example.invalid/viec-lam/tin-loi/syn-000099.html",
+    "source_record_id": "syn-000099",
+    "error_type": "missing_title",
+    "error_message": "Không tìm thấy tiêu đề tin (selector h1.job-title rỗng).",
+    "error_ts": "2026-10-01T02:01:00Z",
+    "component_version": "0.0.0-fixture",
+    "raw_html_uri": null
+  }
+]

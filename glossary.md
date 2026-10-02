@@ -6,7 +6,12 @@ Bản glossary **duy nhất** của dự án (docs/project-plan/09, quy tắc 10
 
 | Thuật ngữ | Nghĩa trong dự án | Môn |
 |---|---|---|
-| Tin tuyển dụng (job posting) | Một tin đăng việc làm trên trang nguồn; khóa nguồn là `source_job_id`, khóa hợp nhất ở silver là `job_uid` | Chung |
+| Tin tuyển dụng (job posting) | Một tin đăng việc làm trên trang nguồn; khóa nguồn là `source_job_id` | Chung |
+| `job_uid` | Khóa của một tin trên một nguồn: `sha1("<source>:<source_job_id>")`, tính bằng `joblens_contracts.job_uid()`. Cùng việc trên hai trang là hai `job_uid` (ADR 0001 D5) | Chung |
+| `dup_group_id` | Nhóm tin trùng giữa các trang, do dedup (WM1) ghi vào `silver.job_dedup`; giá trị là `job_uid` đại diện của nhóm | Chung |
+| `company_key` | Khóa công ty đã gộp giữa các nguồn (`gold.dim_company`) | Chung |
+| `raw_html_uri` | Đường dẫn HTML thô đã lọc PII trên `s3://joblens/raw-html/` (giữ 30 ngày, không nằm trong bronze) | Chung |
+| Mã tỉnh (`location_code`) | Mã đơn vị hành chính 2 chữ số sau sắp xếp 2025, ví dụ `01` Hà Nội, `79` TP.HCM (`gold.dim_location`) | Chung |
 | Review công ty | Đánh giá công khai về nhà tuyển dụng (ITviec), có điểm theo 5 khía cạnh | Chung |
 | Nguồn (source) | Trang hoặc dataset sinh dữ liệu: `topcv`, `itviec`, `vietjobs`, `synthetic` | Chung |
 | Snapshot tin | Trạng thái của các tin đang mở tại một ngày, phục vụ phân tích vòng đời tin và biến động lương | BD |
@@ -16,7 +21,8 @@ Bản glossary **duy nhất** của dự án (docs/project-plan/09, quy tắc 10
 | VietJobs | Dataset 48.092 tin TopCV (LREC 2026), dùng cho backfill, nhãn yếu và baseline | Chung |
 | ESCO | Taxonomy kỹ năng/nghề của EU, đích chuẩn hóa kỹ năng | Chung |
 | Từ điển alias kỹ năng | Bảng ánh xạ cách viết kỹ năng (Việt/Anh, viết tắt) về ESCO skill URI | WM |
-| Hợp đồng dữ liệu (data contract) | Schema message Kafka và schema bảng trong repo này; cơ chế duy nhất nối các repo | Chung |
+| Hợp đồng dữ liệu (data contract) | Schema message Kafka, contract bảng và hợp đồng API trong `schemas/` của repo này; cơ chế duy nhất nối các repo. `draft` = còn được đổi, `stable` = đổi theo SemVer | Chung |
+| Image mô hình | Image Docker có tag `x.y.z-gitsha` do repo WM giao; Airflow của BD chạy bằng KubernetesPodOperator theo hợp đồng chạy ở ADR 0001 D3 | Chung |
 
 ## Nền tảng dữ liệu (Big Data)
 

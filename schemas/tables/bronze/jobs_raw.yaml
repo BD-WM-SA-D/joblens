@@ -1,0 +1,67 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: bronze.jobs_raw
+version: 0.1.0
+status: draft
+description: Message jobs.raw.*.v1 nạp nguyên trạng từ Kafka (chưa chuẩn hóa). Không chứa HTML – HTML ở s3://joblens/raw-html/ (ADR 0001 D1).
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: 'spark-jobs: streaming bronze (đường B) / batch (đường A, backfill VietJobs)'
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- Web-mining-joblens
+used_by:
+- WM1
+- WM2
+write_mode: append
+partition_spec:
+- days(ingest_ts)
+- source
+primary_key:
+- kafka_topic
+- kafka_partition
+- kafka_offset
+columns:
+- name: kafka_topic
+  type: string
+  nullable: false
+  description: Topic nguồn; với backfill VietJobs ghi 'backfill.vietjobs'
+- name: kafka_partition
+  type: int
+  nullable: false
+  description: Partition; backfill ghi -1
+- name: kafka_offset
+  type: long
+  nullable: false
+  description: Offset; backfill ghi số thứ tự dòng
+- name: ingest_ts
+  type: timestamp
+  nullable: false
+  description: Thời điểm ghi vào bronze (UTC)
+- name: source
+  type: string
+  nullable: false
+  description: topcv | itviec | vietjobs | synthetic
+- name: source_job_id
+  type: string
+  nullable: false
+  description: ID tin trên nguồn (Kafka key)
+- name: schema_version
+  type: string
+  nullable: false
+  description: Ví dụ job_posting.v1
+- name: crawl_ts
+  type: timestamp
+  nullable: false
+  description: Event time – dùng cho watermark
+- name: content_hash
+  type: string
+  nullable: false
+  description: SHA-256 payload
+- name: raw_html_uri
+  type: string
+  nullable: true
+  description: Đường dẫn HTML thô trên S3
+- name: payload_json
+  type: string
+  nullable: false
+  description: Payload nguyên trạng dạng JSON

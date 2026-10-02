@@ -1,0 +1,53 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.mart_skill_demand_monthly
+version: 0.1.0
+status: draft
+description: Nhu cầu kỹ năng theo tháng (UC002).
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model mart_skill_demand_monthly
+readers:
+- PTTKHT-joblens
+- Web-mining-joblens
+used_by:
+- UC002
+- WM6
+write_mode: dbt
+partition_spec:
+- month
+primary_key:
+- month
+- skill_id
+- category_source
+grain: tháng × kỹ năng × nhóm nghề
+columns:
+- name: month
+  type: date
+  nullable: false
+  description: Ngày đầu tháng
+- name: skill_id
+  type: string
+  nullable: false
+  description: gold.dim_skill
+- name: skill_label
+  type: string
+  nullable: false
+  description: Nhãn kỹ năng (để app khỏi join)
+- name: category_source
+  type: string
+  nullable: false
+  description: Nhóm nghề; 'ALL' = mọi nhóm
+- name: job_count
+  type: long
+  nullable: false
+  description: Số tin có kỹ năng, đếm theo dup_group_id
+- name: share
+  type: double
+  nullable: false
+  description: job_count / tổng tin trong tháng của nhóm
+  unit: tỉ lệ 0–1
+- name: mom_change
+  type: double
+  nullable: true
+  description: Thay đổi share so với tháng trước
+  unit: điểm phần trăm

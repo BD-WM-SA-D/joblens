@@ -43,6 +43,6 @@ Các con số trên là ước lượng để lập kế hoạch; nhóm đo th�
 
 ## Tuân thủ pháp lý và đạo đức dữ liệu
 
-- **Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15** có hiệu lực từ 01/01/2026, cùng Nghị định hướng dẫn 356/2025/NĐ-CP ([Tilleke & Gibbins](https://www.tilleke.com/insights/vietnams-new-personal-data-protection-law-a-closer-look/)). Đề xuất xử lý: không thu thập CV/trang cần đăng nhập; loại bỏ ngay ở tầng silver mọi trường có thể là dữ liệu cá nhân (tên người liên hệ, email, SĐT, tên người review); bronze chỉ giữ HTML đã qua bộ lọc PII và có thời hạn lưu (ví dụ 30 ngày); dữ liệu chỉ dùng cho mục đích học tập, không chia sẻ lại. (Đây không phải tư vấn pháp lý – nhóm nên hỏi giảng viên nếu có quy định riêng của trường.)
+- **Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15** có hiệu lực từ 01/01/2026, cùng Nghị định hướng dẫn 356/2025/NĐ-CP ([Tilleke & Gibbins](https://www.tilleke.com/insights/vietnams-new-personal-data-protection-law-a-closer-look/)). Đề xuất xử lý: không thu thập CV/trang cần đăng nhập; loại bỏ ngay ở tầng silver mọi trường có thể là dữ liệu cá nhân (tên người liên hệ, email, SĐT, tên người review); HTML thô đã qua bộ lọc PII lưu ở `s3://joblens/raw-html/` với thời hạn 30 ngày, không nằm trong bronze (ADR 0001 D1); dữ liệu chỉ dùng cho mục đích học tập, không chia sẻ lại. (Đây không phải tư vấn pháp lý – nhóm nên hỏi giảng viên nếu có quy định riêng của trường.)
 - Tôn trọng robots.txt và điều khoản sử dụng từng trang; dừng crawl nếu bị yêu cầu.
 - Trích dẫn và tuân thủ giấy phép của mọi dataset công khai.

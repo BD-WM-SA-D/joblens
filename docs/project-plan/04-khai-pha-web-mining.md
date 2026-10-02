@@ -6,14 +6,16 @@
 
 | Mã | Bài toán | Bài giảng | Đầu vào | Baseline → Nâng cao | Dữ liệu đánh giá (nhóm tự làm) | Mức |
 |---|---|---|---|---|---|---|
-| WM1 | Thu thập & tiền xử lý web: crawler lịch sự, loại boilerplate, **phát hiện tin trùng giữa các trang** (shingling + MinHash LSH) | L01, L04 | HTML | So khớp tiêu đề + công ty → MinHash LSH trên nội dung | ~300 cặp tin gán nhãn trùng/không trùng | **Lõi** |
-| WM2 | **Trích xuất thông tin**: span kỹ năng (BIO `SKILL`), lương, kinh nghiệm, cấp bậc; chuẩn hóa kỹ năng về ESCO/alias | L07 | Mô tả công việc | Từ điển + regex → PhoBERT-base-v2 token classification (nhãn yếu từ tag "Kỹ năng cần có" của TopCV và từ điển, sửa tay) | ~1.500 câu gán nhãn span theo guideline kiểu SkillSpan | **Lõi** |
+| WM1 | Thu thập & tiền xử lý web: crawler lịch sự, loại boilerplate, **phát hiện tin trùng giữa các trang** (shingling + MinHash LSH) → ghi `silver.job_dedup` | L01, L04 | HTML | So khớp tiêu đề + công ty → MinHash LSH trên nội dung | ~300 cặp tin gán nhãn trùng/không trùng | **Lõi** |
+| WM2 | **Trích xuất thông tin**: span kỹ năng (BIO `SKILL`); chuẩn hóa kỹ năng về ESCO/alias (lương, kinh nghiệm, cấp bậc do BD chuẩn hóa bằng quy tắc – ADR 0001 D2) | L07 | Mô tả công việc | Từ điển + regex → PhoBERT-base-v2 token classification (nhãn yếu từ tag "Kỹ năng cần có" của TopCV và từ điển, sửa tay) | ~1.500 câu gán nhãn span theo guideline kiểu SkillSpan | **Lõi** |
 | WM3 | **Khai phá quan điểm theo khía cạnh** trên review công ty, theo 5 khía cạnh ITviec đã chấm điểm sẵn (lương & phúc lợi, đào tạo & học hỏi, quản lý, văn hóa, văn phòng) + cân bằng công việc/OT; điểm sao theo khía cạnh làm nhãn yếu | L06 | Review ITviec | Lexicon/unsupervised (L06-01) → PhoBERT/ViSoBERT fine-tune, có thể khởi động từ dữ liệu ABSA tiếng Việt công khai | ~1.000 câu review gán nhãn aspect + polarity | **Lõi** |
-| WM4 | **Tìm kiếm việc làm**: inverted index BM25 + bi-encoder, hybrid ranking | L04 | Tin tuyển dụng, truy vấn | BM25 → hybrid BM25 + embedding | 50 truy vấn × top-20, chấm độ liên quan 0–2 | Mở rộng (chọn WM4 hoặc WM5) |
+| WM4 | **Tìm kiếm việc làm**: inverted index BM25 + bi-encoder, hybrid ranking; phục vụ app qua API `schemas/api/search.v1.yaml` (ADR 0001 D4a) | L04 | Tin tuyển dụng, truy vấn | BM25 → hybrid BM25 + embedding | 50 truy vấn × top-20, chấm độ liên quan 0–2 | Mở rộng (chọn WM4 hoặc WM5) |
 | WM5 | **Gợi ý việc làm**: content-based (hồ sơ kỹ năng ↔ tin) + implicit CF (ALS) + xử lý cold-start | L08 | `silver.job_skills`, `events.user` (synthetic) | Độ phổ biến → content-based → hybrid với ALS | Chia theo thời gian trên log synthetic; kiểm chứng thêm trên CareerBuilder nếu có thời gian | Mở rộng |
 | WM6 | **Đồ thị kỹ năng**: đồ thị đồng xuất hiện, PageRank (kỹ năng "trung tâm"), Louvain (cụm kỹ năng ≈ vai trò) | L05 | `mart_skill_graph_edges` | Degree → PageRank; phát hiện cộng đồng | Đánh giá định tính + modularity + độ ổn định theo tháng | Mở rộng nhẹ |
 | WM7 | Query mining trên log tìm kiếm (gom cụm truy vấn, gợi ý truy vấn) | L09 | log synthetic | | | Tùy chọn |
 | WM8 | Phân loại nghề 16 lớp / ước lượng lương, so với baseline VietJobs | L02 | VietJobs | Logistic/GBDT trên TF-IDF → PhoBERT | Tập test của VietJobs | Tùy chọn |
+
+Mô hình đưa vào hệ thống dưới dạng **image Docker có tag**, Airflow của Big Data gọi; code mô hình chỉ nằm ở repo Web Mining (ADR 0001 D3).
 
 Nguyên tắc thực nghiệm: cố định **snapshot Iceberg** cho train/test; báo cáo cả baseline; ghi rõ thời gian gán nhãn và độ đồng thuận giữa người gán nhãn (Cohen's κ trên ~10% mẫu) để kết quả đáng tin.
 

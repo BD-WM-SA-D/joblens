@@ -1,0 +1,60 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.mart_company_aspect_sentiment
+version: 0.1.0
+status: draft
+description: Đánh giá công ty theo khía cạnh (UC005), từ silver.review_aspects và điểm sao ITviec.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model mart_company_aspect_sentiment
+readers:
+- PTTKHT-joblens
+- Web-mining-joblens
+used_by:
+- UC005
+write_mode: dbt
+partition_spec: []
+primary_key:
+- company_key
+- aspect
+grain: công ty × khía cạnh (toàn bộ thời gian)
+columns:
+- name: company_key
+  type: string
+  nullable: false
+  description: gold.dim_company
+- name: company_name
+  type: string
+  nullable: false
+  description: Tên hiển thị
+- name: aspect
+  type: string
+  nullable: false
+  description: Như silver.review_aspects.aspect
+- name: sentence_count
+  type: long
+  nullable: false
+  description: Số câu nhắc tới khía cạnh
+- name: positive_share
+  type: double
+  nullable: false
+  description: Tỉ lệ câu tích cực
+  unit: tỉ lệ 0–1
+- name: negative_share
+  type: double
+  nullable: false
+  description: Tỉ lệ câu tiêu cực
+  unit: tỉ lệ 0–1
+- name: neutral_share
+  type: double
+  nullable: false
+  description: Tỉ lệ câu trung tính
+  unit: tỉ lệ 0–1
+- name: avg_star_rating
+  type: double
+  nullable: true
+  description: Điểm sao trung bình ITviec của khía cạnh; null với work_life_balance
+  unit: 1–5
+- name: model_version
+  type: string
+  nullable: false
+  description: Version mô hình ABSA đã dùng

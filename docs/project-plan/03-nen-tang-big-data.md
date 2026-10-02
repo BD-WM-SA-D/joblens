@@ -28,8 +28,8 @@ flowchart LR
   subgraph CMP["ns: compute"]
     SS["Spark Structured Streaming"]
     SB["Spark batch"]
-    SJ["Spark silver jobs<br/>(parse, MinHash dedup, NER inference)"]
-    MJ["Mining jobs<br/>(ABSA, graph, RecSys, index)"]
+    SJ["Spark silver jobs<br/>(làm sạch, chuẩn hóa, gộp kết quả dedup/NER)"]
+    MJ["Mining jobs – image của WM<br/>(NER, dedup, ABSA, RecSys, index)"]
     DBT["dbt (dbt-trino)"]
     GX["Great Expectations"]
   end
@@ -74,7 +74,9 @@ Khung này bám đúng "four-layer stack" của L01 và sơ đồ L14: **Store**
 | `jobs.raw.itviec.v1` | `source_job_id` | 6 | 7 ngày | |
 | `reviews.raw.itviec.v1` | `company_id` | 3 | 7 ngày | |
 | `events.user.v1` | `user_id` | 6 | 3 ngày | Luồng synthetic cho streaming + RecSys |
-| `dlq.parse_errors.v1` | `source` | 1 | 14 ngày | Bản ghi lỗi parse, để GX/BD báo cáo tỉ lệ lỗi |
+| `dlq.parse_errors.v1` | `source` | 1 | 14 ngày | Bản ghi lỗi parser (WM ghi), để BD báo cáo tỉ lệ lỗi |
+| `app.alert_subscriptions.v1` | `subscription_id` | 3 | compacted | Đăng ký cảnh báo UC006 (app ghi) – ADR 0001 D4b |
+| `alerts.job_match.v1` | `user_id` | 3 | 3 ngày | Tin mới khớp đăng ký (job streaming của BD ghi, app đọc) |
 
 Producer: `acks=all`, idempotent producer bật; value là JSON có `schema_version`, `source`, `url`, `crawl_ts`, `content_hash`, payload. Consumer group riêng cho từng đường (streaming bronze, kiểm thử). Replay từ Kafka + time travel của Iceberg là cơ chế tái xử lý (tinh thần Kappa, L09).
 
@@ -85,12 +87,16 @@ Producer: `acks=all`, idempotent producer bật; value là JSON có `schema_vers
 | Bronze | `bronze.jobs_raw` | `days(ingest_ts)`, `source` | append | Payload thô + metadata crawl |
 | | `bronze.reviews_raw` | `days(ingest_ts)` | append | |
 | | `bronze.user_events` | `hours(event_ts)` | append (streaming) | |
-| Silver | `silver.job_postings` | `months(posted_date)`, `bucket(16, job_uid)` | `MERGE INTO` (upsert theo `job_uid`) | Tin đã chuẩn hóa: lương min/max VND, tỉnh/thành (34), cấp bậc, loại hợp đồng, `dup_group_id` |
+| Silver | `silver.job_postings` | `months(first_seen_ts)`, `bucket(16, job_uid)` | `MERGE INTO` (upsert theo `job_uid`) | Tin đã chuẩn hóa (BD, bằng quy tắc – ADR 0001 D2): lương min/max VND, tỉnh/thành (34), kinh nghiệm, cấp bậc, loại hợp đồng |
 | | `silver.job_postings_snapshot` | `days(snapshot_date)` | append | Trạng thái tin mỗi ngày → vòng đời tin, biến động lương |
 | | `silver.job_skills` | `bucket(16, job_uid)` | overwrite theo partition | `job_uid, skill_id, surface_form, span, confidence, extractor_version` |
-| | `silver.review_aspects` | `months(review_date)` | append | `company_id, aspect, polarity, confidence, model_version` |
+| | `silver.review_aspects` | `months(review_date)` | append | `company_key, aspect, polarity, confidence, model_version` |
+| | `silver.job_dedup` | `bucket(16, job_uid)` | `MERGE INTO` | `job_uid, dup_group_id, score, dedup_version` – image dedup của WM ghi (ADR 0001 D5) |
+| | `silver.reco_scores` | `days(generated_date)` | overwrite theo partition | điểm gợi ý WM5 – image của WM ghi |
 | Gold (dbt) | `dim_skill`, `dim_company`, `dim_location`, `fct_job_snapshot_daily` | theo thời gian | dbt model | Mô hình sao cho Trino |
 | | `mart_skill_demand_monthly`, `mart_salary_role_region`, `mart_skill_graph_edges`, `mart_company_aspect_sentiment`, `mart_job_reco_candidates` | | dbt model | Phục vụ trực tiếp các ca sử dụng |
+
+Cột chi tiết của từng bảng: `schemas/tables/` trong repo `joblens`. `silver.job_skills`, `silver.job_dedup`, `silver.review_aspects`, `silver.reco_scores` do image của WM ghi, Airflow của BD chạy (ADR 0001 D3).
 
 Định dạng file Parquet (L03), có job compaction/expire snapshot định kỳ (L14 "Cost"). Mỗi lần "chốt số liệu" cho báo cáo, gắn **Iceberg tag** (ví dụ `report-bd-v1`) để số liệu tái lập được.
 
@@ -120,7 +126,7 @@ So sánh: độ tươi dữ liệu (freshness), chi phí (CPU-giây, bộ nhớ)
 
 ## Tech stack đề xuất
 
-Phiên bản ghi theo tình trạng cuối 09/2026; khi dựng môi trường nhóm **pin phiên bản trong `joblens-contracts/versions.md`** và chỉ nâng cấp có chủ đích.
+Phiên bản ghi theo tình trạng cuối 09/2026; khi dựng môi trường nhóm **pin phiên bản trong `joblens/versions.md`** và chỉ nâng cấp có chủ đích.
 
 | Tầng | Đề xuất | Phiên bản gợi ý | Lý do / bài giảng liên quan | Phương án thay thế |
 |---|---|---|---|---|
@@ -138,7 +144,7 @@ Phiên bản ghi theo tình trạng cuối 09/2026; khi dựng môi trường nh
 | Monitoring | Prometheus + Grafana | kube-prometheus-stack | Đo lag, latency cho báo cáo BD | |
 | Crawl | Scrapy 2.x (+ scrapy-playwright khi trang render JS) | | L01, L04 (web crawling, tiền xử lý) | Playwright thuần |
 | NLP tiếng Việt | underthesea / VnCoreNLP (tách từ – PhoBERT cần đầu vào đã tách từ), **PhoBERT-base-v2**, ViSoBERT, [bkai vietnamese-bi-encoder](https://huggingface.co/bkai-foundation-models/vietnamese-bi-encoder) (embedding) | | L06, L07, L04 | LLM zero/few-shot làm baseline (như VietJobs) |
-| ML trên Spark | Spark ML: `MinHashLSH` (dedup), `ALS` (CF), pipeline + CrossValidator | theo Spark 4.1 | L13, L08 | |
+| ML trên Spark | Spark ML: `MinHashLSH` (dedup – nằm trong job của WM), `ALS` (CF), pipeline + CrossValidator | theo Spark 4.1 | L13, L08 | |
 | Đồ thị | GraphFrames hoặc NetworkX (trên mart cạnh đã tổng hợp) | | L05 (Web Mining) | |
 | Ứng dụng | FastAPI + trino-python-client; UI Streamlit hoặc React | | SA&D chương 5 | |
 | Mô hình hóa UML | draw.io / StarUML / PlantUML | | Công cụ liệt kê trong l00 | |

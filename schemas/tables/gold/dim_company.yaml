@@ -1,0 +1,40 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.dim_company
+version: 0.1.0
+status: draft
+description: Danh mục công ty đã gộp giữa các nguồn.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model dim_company
+readers:
+- PTTKHT-joblens
+- Web-mining-joblens
+used_by:
+- UC001
+- UC005
+write_mode: dbt
+partition_spec: []
+primary_key:
+- company_key
+grain: một công ty
+columns:
+- name: company_key
+  type: string
+  nullable: false
+  description: Khóa công ty chuẩn hóa
+- name: company_name
+  type: string
+  nullable: false
+  description: Tên hiển thị
+- name: sources
+  type: list<string>
+  nullable: false
+  description: Các nguồn có công ty này
+- name: job_count
+  type: long
+  nullable: false
+  description: Số tin (đếm theo dup_group_id)
+- name: review_count
+  type: long
+  nullable: false
+  description: Số review

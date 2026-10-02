@@ -1,0 +1,47 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: silver.job_postings_snapshot
+version: 0.1.0
+status: draft
+description: Trạng thái tin mỗi ngày – vòng đời tin, biến động lương.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: 'spark-jobs: snapshot hằng ngày'
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- Web-mining-joblens
+used_by:
+- UC002
+- UC003
+write_mode: append
+partition_spec:
+- days(snapshot_date)
+primary_key:
+- snapshot_date
+- job_uid
+columns:
+- name: snapshot_date
+  type: date
+  nullable: false
+  description: Ngày chụp
+- name: job_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_job_id>') – joblens_contracts.job_uid() (ADR 0001 D5)
+- name: is_active
+  type: boolean
+  nullable: false
+  description: Tin còn mở
+- name: salary_min_vnd
+  type: long
+  nullable: true
+  description: Lương tối thiểu tại ngày chụp
+  unit: VND/tháng
+- name: salary_max_vnd
+  type: long
+  nullable: true
+  description: Lương tối đa tại ngày chụp
+  unit: VND/tháng
+- name: content_hash
+  type: string
+  nullable: false
+  description: Hash payload tại ngày chụp

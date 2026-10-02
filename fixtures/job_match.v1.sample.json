@@ -1,0 +1,16 @@
+[
+  {
+    "schema_version": "job_match.v1",
+    "match_id": "e204e6f69135aff2600e8cf28bbeea54a0ed8438",
+    "subscription_id": "sub-001",
+    "user_id": "app-user-001",
+    "job_uid": "862e0278ea284bae21ffed05e1dafedc6baac559",
+    "matched_ts": "2026-10-01T02:01:30Z",
+    "job_crawl_ts": "2026-10-01T02:00:00Z",
+    "title": "Lập trình viên Python (Data Engineer)",
+    "company_name": "Công ty Mẫu A",
+    "url": "https://example.invalid/viec-lam/lap-trinh-vien-python/syn-000001.html",
+    "matched_on": { "keywords": ["python"], "skill_ids": [], "location_codes": ["01"] },
+    "matcher_version": "0.0.0-fixture"
+  }
+]

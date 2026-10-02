@@ -1,6 +1,6 @@
-<!-- Mẫu README cho joblens-platform / joblens-mining / joblens-app. Thay các chỗ <...>. -->
+<!-- Mẫu README cho Big-Data-Storage-and-Processing-joblens / Web-mining-joblens / PTTKHT-joblens. Thay các chỗ <...>. -->
 
-# <joblens-platform | joblens-mining | joblens-app>
+# <Big-Data-Storage-and-Processing-joblens | Web-mining-joblens | PTTKHT-joblens>
 
 <Một câu mô tả repo, ví dụ: "Nền tảng lakehouse của dự án JobLens VN: Kafka → Spark → Iceberg → dbt → Trino trên Kubernetes.">
 
@@ -18,7 +18,7 @@
 
 ```bash
 # 1. Cài hợp đồng dữ liệu (pin version)
-pip install git+https://github.com/<org>/joblens-contracts@v<x.y.z>
+pip install git+https://github.com/<org>/joblens@v<x.y.z>
 
 # 2. Cấu hình
 cp .env.example .env
@@ -37,13 +37,13 @@ cp .env.example .env
 
 - Báo cáo môn: [`docs/`](docs/)
 - Quyết định kiến trúc: [`docs/adr/`](docs/adr/)
-- Thuật ngữ: `joblens-contracts/glossary.md`
+- Thuật ngữ: `joblens/glossary.md`
 
 ## Phụ thuộc (chỉ để tham khảo, không thuộc phần chấm)
 
 | Repo | Vai trò | Version đang dùng |
 |---|---|---|
-| `joblens-contracts` | Schema message/bảng, fixtures, glossary | v<x.y.z> |
+| `joblens` | Schema message/bảng, fixtures, glossary | v<x.y.z> |
 | `<repo khác>` | <…> | v<x.y.z> |
 
 ## Chốt số liệu cho báo cáo
@@ -54,4 +54,4 @@ cp .env.example .env
 
 ## Dữ liệu và giấy phép
 
-Repo không chứa dữ liệu crawl. Dữ liệu mẫu trong `joblens-contracts/fixtures` lấy từ VietJobs (Pham Dinh et al., LREC 2026) – trích dẫn theo giấy phép của dataset.
+Repo không chứa dữ liệu crawl. Dữ liệu mẫu trong `joblens/fixtures` lấy từ VietJobs (Pham Dinh et al., LREC 2026) – trích dẫn theo giấy phép của dataset.

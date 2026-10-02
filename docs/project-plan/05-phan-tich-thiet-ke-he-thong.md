@@ -15,12 +15,12 @@
 
 | UC | Tên | Actor chính | Dữ liệu phía sau | Liên kết môn khác |
 |---|---|---|---|---|
-| UC001 | Tìm kiếm việc làm theo từ khóa/bộ lọc | Người tìm việc | `silver.job_postings`, chỉ mục tìm kiếm | WM4 |
+| UC001 | Tìm kiếm việc làm theo từ khóa/bộ lọc | Người tìm việc | `silver.job_postings` + API tìm kiếm (`schemas/api/search.v1.yaml`, lùi về Trino) | WM4 |
 | UC002 | Xem xu hướng nhu cầu kỹ năng | Người tìm việc, Chuyên viên | `mart_skill_demand_monthly` | WM2, BD gold |
 | UC003 | So sánh mức lương theo vị trí/tỉnh | Người tìm việc, HR | `mart_salary_role_region` | BD gold |
 | UC004 | Khai báo hồ sơ kỹ năng và nhận gợi ý việc làm | Người tìm việc | `mart_job_reco_candidates` | WM5 |
 | UC005 | Xem đánh giá công ty theo khía cạnh | Người tìm việc | `mart_company_aspect_sentiment` | WM3 |
-| UC006 | Đăng ký cảnh báo tin mới khớp hồ sơ | Người tìm việc | luồng streaming | BD streaming |
+| UC006 | Đăng ký cảnh báo tin mới khớp hồ sơ | Người tìm việc | app ghi `app.alert_subscriptions.v1` → BD ghép → app đọc `alerts.job_match.v1` | BD streaming |
 | UC007 | Xuất báo cáo thị trường (CSV/PDF) | HR, Chuyên viên | các mart | – |
 | UC008 | Quản lý nguồn thu thập (bật/tắt, lịch) | Quản trị dữ liệu | cấu hình spider, Airflow | WM1, BD |
 | UC009 | Giám sát chất lượng dữ liệu | Quản trị dữ liệu | kết quả GX, dbt tests | BD |

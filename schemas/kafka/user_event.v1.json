@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BD-WM-SA-D/joblens/schemas/kafka/user_event.v1.json",
+  "x-version": "1.0.0",
+  "title": "user_event v1",
+  "description": "Sự kiện tương tác người dùng SYNTHETIC trên topic events.user.v1. Kafka key = user_id. Repo ghi: Big-Data-Storage-and-Processing-joblens (event-generator). Mọi kết quả dùng luồng này phải ghi rõ là synthetic.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_id", "user_id", "event_type", "event_ts", "is_synthetic"],
+  "properties": {
+    "schema_version": { "const": "user_event.v1" },
+    "event_id": { "type": "string", "format": "uuid" },
+    "user_id": { "description": "ID người dùng giả lập, dạng syn-u-<số>.", "type": "string", "pattern": "^syn-u-[0-9]+$" },
+    "session_id": { "type": ["string", "null"] },
+    "event_type": { "enum": ["search", "view", "save", "apply"] },
+    "event_ts": { "type": "string", "format": "date-time" },
+    "job_uid": { "description": "Bắt buộc với view/save/apply. Xem joblens_contracts.job_uid().", "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "query": { "description": "Bắt buộc với search.", "type": ["string", "null"] },
+    "filters": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "location_codes": { "type": "array", "items": { "type": "string" } },
+        "salary_min_vnd": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "position": { "description": "Vị trí của tin trong danh sách kết quả khi người dùng tương tác (bắt đầu từ 1).", "type": ["integer", "null"], "minimum": 1 },
+    "is_synthetic": { "const": true },
+    "generator_version": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "event_type": { "const": "search" } } },
+      "then": { "required": ["query"], "properties": { "query": { "type": "string", "minLength": 1 } } },
+      "else": { "required": ["job_uid"], "properties": { "job_uid": { "type": "string" } } }
+    }
+  ]
+}

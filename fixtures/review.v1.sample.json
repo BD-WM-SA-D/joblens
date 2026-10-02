@@ -1,0 +1,46 @@
+[
+  {
+    "schema_version": "review.v1",
+    "source": "synthetic",
+    "source_review_id": "syn-r-0001",
+    "company_id": "syn-co-01",
+    "url": "https://example.invalid/companies/syn-co-01/review",
+    "crawl_ts": "2026-10-01T03:00:00Z",
+    "content_hash": "00000000000000000000000000000000000000000000000000000000000000a1",
+    "raw_html_uri": null,
+    "payload": {
+      "company_name": "Công ty Mẫu A",
+      "review_month": "2026-08",
+      "rating_overall": 4,
+      "aspect_ratings": {
+        "salary_benefits": 4,
+        "training_learning": 5,
+        "management_care": 3,
+        "culture_fun": 4,
+        "office_workspace": null
+      },
+      "recommend": true,
+      "title": "Môi trường học hỏi tốt",
+      "liked_text": "Được đào tạo bài bản, đồng nghiệp hỗ trợ nhiệt tình.",
+      "improvement_text": "Quy trình xét tăng lương còn chậm, hay phải OT cuối tháng."
+    }
+  },
+  {
+    "schema_version": "review.v1",
+    "source": "synthetic",
+    "source_review_id": "syn-r-0002",
+    "company_id": "syn-co-01",
+    "url": "https://example.invalid/companies/syn-co-01/review",
+    "crawl_ts": "2026-10-01T03:00:02Z",
+    "content_hash": "00000000000000000000000000000000000000000000000000000000000000a2",
+    "payload": {
+      "company_name": "Công ty Mẫu A",
+      "review_month": "2026-07",
+      "rating_overall": 2,
+      "aspect_ratings": {},
+      "recommend": false,
+      "liked_text": "Office is near the city center.",
+      "improvement_text": "Management rarely listens to feedback."
+    }
+  }
+]

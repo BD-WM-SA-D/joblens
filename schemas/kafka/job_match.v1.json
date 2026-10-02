@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BD-WM-SA-D/joblens/schemas/kafka/job_match.v1.json",
+  "x-version": "1.0.0",
+  "title": "job_match v1",
+  "description": "Kết quả ghép tin mới với đăng ký cảnh báo (UC006) trên topic alerts.job_match.v1. Kafka key = user_id. Repo ghi: Big-Data-Storage-and-Processing-joblens (job streaming). Đọc: PTTKHT-joblens (app gửi thông báo). ADR 0001 D4b.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "match_id", "subscription_id", "user_id", "job_uid", "matched_ts", "job_crawl_ts", "title"],
+  "properties": {
+    "schema_version": { "const": "job_match.v1" },
+    "match_id": { "description": "sha1(subscription_id + ':' + job_uid) – để app bỏ trùng khi nhận lại.", "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "subscription_id": { "type": "string", "minLength": 1 },
+    "user_id": { "type": "string", "minLength": 1 },
+    "job_uid": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "matched_ts": { "type": "string", "format": "date-time" },
+    "job_crawl_ts": { "description": "crawl_ts của tin – app đo NFR 'cảnh báo ≤ 5 phút' bằng matched_ts/hiển thị trừ giá trị này.", "type": "string", "format": "date-time" },
+    "title": { "type": "string", "minLength": 1 },
+    "company_name": { "type": ["string", "null"] },
+    "url": { "type": ["string", "null"], "format": "uri" },
+    "matched_on": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keywords": { "type": "array", "items": { "type": "string" } },
+        "skill_ids": { "type": "array", "items": { "type": "string" } },
+        "location_codes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "matcher_version": { "type": ["string", "null"] }
+  }
+}

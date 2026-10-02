@@ -6,27 +6,29 @@
 
 ## 1. Sửa hợp đồng trước, sửa code sau
 
-- Mọi thay đổi schema message Kafka hoặc schema bảng đều mở PR ở `joblens-contracts` **trước**, báo trước cho nhóm theo ngoại lệ ở quy tắc 3, sau đó mới sửa code ở repo khác.
+- Mọi thay đổi schema message Kafka hoặc schema bảng đều mở PR ở `joblens` **trước**, báo trước cho nhóm theo ngoại lệ ở quy tắc 3, sau đó mới sửa code ở repo khác.
 - Đánh version theo SemVer: thêm trường không bắt buộc → tăng *minor*; đổi tên hoặc xóa trường → tăng *major*.
 - Khi đổi *major*, tạo topic/bảng mới (ví dụ `jobs.raw.topcv.v2`) và giữ bản cũ chạy song song cho đến khi mọi repo đã chuyển xong.
-- CI của `joblens-contracts` kiểm tra `fixtures` luôn khớp schema.
+- CI của `joblens` kiểm tra `fixtures` luôn khớp schema.
 
 ## 2. Mỗi bảng chỉ một repo được ghi
 
 | Bảng / vùng | Repo được ghi | Repo chỉ đọc |
 |---|---|---|
-| Topic `jobs.raw.*`, `reviews.raw.*` | mining (crawler) | platform |
+| Topic `jobs.raw.*`, `reviews.raw.*`, `dlq.parse_errors.v1` | mining (crawler) | platform |
 | `events.user.v1` | platform (event-generator) | mining |
 | `bronze.*`, `silver.job_postings*` | platform | mining, app |
-| `silver.job_skills`, `silver.review_aspects` | mining (job mô hình, do Airflow của platform chạy) | platform, app |
+| `silver.job_skills`, `silver.job_dedup`, `silver.review_aspects`, `silver.reco_scores` | mining (image mô hình, do Airflow của platform chạy) | platform, app |
+| Topic `app.alert_subscriptions.v1` | app | platform |
+| Topic `alerts.job_match.v1` | platform (job streaming) | app |
 | Gold (dbt) | platform | app, mining |
 
-Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự ghi bảng của repo khác. Quy tắc này khớp với nguyên tắc mỗi phần có đúng một môn chấm chính.
+Danh sách đầy đủ kèm schema/contract: `schemas/README.md` trong repo `joblens`. Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự ghi bảng của repo khác. Quy tắc này khớp với nguyên tắc mỗi phần có đúng một môn chấm chính.
 
 ## 3. Tự review, `main` luôn chạy được
 
 - **Mặc định là tự review.** Mọi thay đổi vẫn vào `main` qua PR (để có lịch sử và để CI chạy), nhưng người mở PR tự đọc lại toàn bộ diff theo [checklist](#checklist-mở-pr) rồi tự merge khi CI pass – không chờ người khác duyệt.
-- **Ngoại lệ – thay đổi có thể làm hỏng repo khác** (sửa `joblens-contracts`, đổi tên cột/bảng, đổi topic): không cần review đầy đủ, chỉ cần **báo trước** trong nhóm chat kèm link PR. Sau **24 giờ** không ai phản đối thì tự merge. Riêng thay đổi phá vỡ tương thích (tăng *major*) thì chờ người phụ trách repo bị ảnh hưởng trả lời "ok" – một dòng là đủ.
+- **Ngoại lệ – thay đổi có thể làm hỏng repo khác** (sửa `joblens`, đổi tên cột/bảng, đổi topic): không cần review đầy đủ, chỉ cần **báo trước** trong nhóm chat kèm link PR. Sau **24 giờ** không ai phản đối thì tự merge. Riêng thay đổi phá vỡ tương thích (tăng *major*) thì chờ người phụ trách repo bị ảnh hưởng trả lời "ok" – một dòng là đủ.
 - **Để máy kiểm tra thay người:** CI chạy lint + test + kiểm tra `fixtures` khớp schema; pre-commit chạy `ruff` và gitleaks trước mỗi commit. Buổi ghép hệ thống hằng tuần (quy tắc 5) là lần kiểm tra chéo duy nhất, tập trung vào chỗ nối giữa các repo.
 - Nhánh ngắn hạn `feat/…`, `fix/…`, `docs/…`; merge kiểu squash.
 - Commit theo Conventional Commits, ví dụ `feat(crawler): thêm adapter ITviec`, `fix(dbt): sửa đơn vị lương USD`.
@@ -35,7 +37,7 @@ Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự gh
 ## 4. Không dùng `latest`, luôn ghi rõ phiên bản
 
 - Mỗi repo gắn tag SemVer khi phát hành; image Docker gắn tag `version-gitsha`, ví dụ `skill-extractor:1.2.0-a1b2c3d`.
-- `joblens-platform/deploy/compat.md` là bảng phiên bản của mỗi lần chạy:
+- `Big-Data-Storage-and-Processing-joblens/deploy/compat.md` là bảng phiên bản của mỗi lần chạy:
 
   | Ngày | platform | mining (images) | app | contracts | Ghi chú |
   |---|---|---|---|---|---|
@@ -46,13 +48,13 @@ Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự gh
 ## 5. Ghép hệ thống mỗi tuần
 
 - Mỗi tuần một buổi chạy thử toàn luồng: crawler → Kafka → bronze → silver → gold → app.
-- `joblens-platform` có một script kiểm tra nhanh (smoke test) cho việc này.
+- `Big-Data-Storage-and-Processing-joblens` có một script kiểm tra nhanh (smoke test) cho việc này.
 - Lỗi ở chỗ nối giữa các repo được ưu tiên sửa **trước** việc mới.
 
 ## 6. Một bảng công việc chung cho cả org
 
 - GitHub Projects cấp org, gom issue của cả 4 repo.
-- Issue liên quan repo khác dẫn link dạng `joblens-vn/joblens-platform#12`, gắn nhãn `cross-repo`; đang chờ repo khác thì gắn `blocked`.
+- Issue liên quan repo khác dẫn link dạng `BD-WM-SA-D/Big-Data-Storage-and-Processing-joblens#12`, gắn nhãn `cross-repo`; đang chờ repo khác thì gắn `blocked`.
 - Mỗi issue có đúng một người phụ trách; issue lớn tách nhỏ đến mức làm xong trong ≤ 3 ngày.
 
 ## 7. Cấu hình thống nhất, không commit bí mật
@@ -65,6 +67,10 @@ Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự gh
   | `JOBLENS_S3_ENDPOINT`, `JOBLENS_S3_BUCKET` | object storage |
   | `JOBLENS_CATALOG_URI` | Iceberg REST catalog |
   | `JOBLENS_TRINO_URL` | Trino |
+  | `JOBLENS_S3_REGION`, `JOBLENS_S3_ACCESS_KEY_ID`, `JOBLENS_S3_SECRET_ACCESS_KEY` | vùng và khóa S3 (khóa để trống trong `.env.example`) |
+  | `JOBLENS_CATALOG_WAREHOUSE` | tên warehouse trong Lakekeeper |
+  | `JOBLENS_TRINO_USER`, `JOBLENS_TRINO_PASSWORD` | người dùng Trino |
+  | `JOBLENS_SEARCH_URL` | dịch vụ tìm kiếm; trống thì app lùi về Trino |
   | `JOBLENS_ENV` | `local` / `k8s` |
 
 - Repo nào cũng có `.env.example`; mật khẩu/key để trong Kubernetes Secret hoặc `.env` đã gitignore (chi tiết ở quy tắc 8).
@@ -84,7 +90,7 @@ Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự gh
 | Tài liệu có bản quyền | Slide bài giảng, sách, tài liệu của giảng viên | Không phải của nhóm; repo có thể thành public | Chỉ trích dẫn tên bài giảng trong báo cáo |
 | Rác môi trường | `.venv/`, `__pycache__/`, `node_modules/`, `target/` (dbt), `logs/`, `.idea/`, `Thumbs.db` | Không cần, gây xung đột | Sinh lại từ lệnh cài đặt |
 
-**Ngoại lệ được commit:** `joblens-contracts/fixtures/` (dữ liệu mẫu nhỏ, có giấy phép rõ ràng như VietJobs, dưới ~5 MB), `.env.example`, file cấu hình mẫu không chứa bí mật.
+**Ngoại lệ được commit:** `joblens/fixtures/` (dữ liệu mẫu nhỏ, có giấy phép rõ ràng như VietJobs, dưới ~5 MB), `.env.example`, file cấu hình mẫu không chứa bí mật.
 
 **Chặn tự động** (bắt buộc cài ở cả 4 repo):
 
@@ -102,12 +108,12 @@ Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự gh
 
 - Python chung một phiên bản (ví dụ 3.12), quản lý bằng `uv` hoặc `pip-tools`.
 - `ruff` (lint + format), `pytest`, `pre-commit` với cùng cấu hình.
-- Tạo cả 4 repo từ một **template repository** để không phải chép tay cấu hình.
+- File cấu hình chung có bản gốc ở `joblens/docs/project-plan/templates/`, đồng bộ sang 4 repo bằng `scripts/sync_templates.py` (không chép tay, không sửa tại chỗ).
 
 ## 10. Ghi lại quyết định, giữ nhịp trao đổi
 
-- Quyết định kỹ thuật ghi thành ADR ở repo chủ (ví dụ `joblens-platform/docs/adr/0003-lakekeeper-catalog.md`), liệt kê trong `joblens-contracts/adr-index.md`.
-- Glossary chỉ có một bản duy nhất ở `joblens-contracts`.
+- Quyết định kỹ thuật ghi thành ADR ở repo chủ (ví dụ `Big-Data-Storage-and-Processing-joblens/docs/adr/0003-lakekeeper-catalog.md`), liệt kê trong `joblens/adr-index.md`.
+- Glossary chỉ có một bản duy nhất ở `joblens`.
 - Với thay đổi thuộc ngoại lệ ở quy tắc 3: ai phản đối thì lên tiếng trong **24 giờ**; im lặng được coi là đồng ý.
 - Họp 30 phút mỗi tuần, ngay sau buổi ghép hệ thống: việc xong, việc bị chặn, thay đổi hợp đồng sắp tới.
 - Nếu dùng AI để sinh code hoặc tài liệu, ghi chú trong mô tả PR (công cụ, phần nào, ai đã kiểm tra) – vừa minh bạch, vừa là tư liệu cho phần Human-AI collaboration của môn Phân tích thiết kế hệ thống.
@@ -165,7 +171,7 @@ Dùng để tự review trước khi merge.
 - [ ] Không lẫn cấu hình riêng của máy mình (cổng, đường dẫn, RAM…) – những thứ đó để trong file `*.local.*`.
 - [ ] Nếu đã sửa gì trực tiếp trên cluster/giao diện web: đã đưa ngược vào manifest, values hoặc file export.
 - [ ] PR nhỏ, một mục đích; tiêu đề theo Conventional Commits.
-- [ ] Nếu đụng schema: đã có PR ở `joblens-contracts` và đã tăng version.
+- [ ] Nếu đụng schema: đã có PR ở `joblens` và đã tăng version.
 - [ ] Test/lint pass; không có dữ liệu hay bí mật trong diff.
 - [ ] Đã cập nhật tài liệu/ADR nếu thay đổi hành vi hoặc kiến trúc.
 - [ ] Đã ghi chú nếu có dùng AI.

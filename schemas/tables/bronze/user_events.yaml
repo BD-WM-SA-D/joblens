@@ -1,0 +1,60 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: bronze.user_events
+version: 0.1.0
+status: draft
+description: Luồng sự kiện SYNTHETIC events.user.v1. Mọi kết quả dùng bảng này phải ghi là synthetic.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: 'spark-jobs: streaming bronze'
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- Web-mining-joblens
+used_by:
+- WM5
+- WM7
+write_mode: append
+partition_spec:
+- hours(event_ts)
+primary_key:
+- event_id
+columns:
+- name: event_id
+  type: string
+  nullable: false
+  description: UUID sự kiện
+- name: user_id
+  type: string
+  nullable: false
+  description: syn-u-<số>
+- name: session_id
+  type: string
+  nullable: true
+  description: Phiên
+- name: event_type
+  type: string
+  nullable: false
+  description: search | view | save | apply
+- name: event_ts
+  type: timestamp
+  nullable: false
+  description: Event time
+- name: job_uid
+  type: string
+  nullable: true
+  description: Bắt buộc với view/save/apply
+- name: query
+  type: string
+  nullable: true
+  description: Bắt buộc với search
+- name: filters_json
+  type: string
+  nullable: true
+  description: Bộ lọc dạng JSON
+- name: position
+  type: int
+  nullable: true
+  description: Vị trí tin trong danh sách kết quả
+- name: ingest_ts
+  type: timestamp
+  nullable: false
+  description: Thời điểm ghi vào bronze

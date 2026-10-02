@@ -1,0 +1,52 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.mart_job_reco_candidates
+version: 0.1.0
+status: draft
+description: Danh sách gợi ý việc làm đã xếp hạng (UC004), từ silver.reco_scores; chỉ giữ tin còn mở và một tin mỗi dup_group_id.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model mart_job_reco_candidates
+readers:
+- PTTKHT-joblens
+used_by:
+- UC004
+write_mode: dbt
+partition_spec: []
+primary_key:
+- user_id
+- job_uid
+- strategy
+grain: người dùng × tin × chiến lược (ngày sinh gần nhất)
+columns:
+- name: user_id
+  type: string
+  nullable: false
+  description: Người dùng (synthetic)
+- name: job_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_job_id>') – joblens_contracts.job_uid() (ADR 0001 D5)
+- name: strategy
+  type: string
+  nullable: false
+  description: popularity | content | als | hybrid
+- name: rank
+  type: int
+  nullable: false
+  description: Hạng trong danh sách của user theo strategy (1 = tốt nhất)
+- name: score
+  type: double
+  nullable: false
+  description: Điểm từ silver.reco_scores
+- name: title
+  type: string
+  nullable: false
+  description: Tiêu đề tin (để app khỏi join)
+- name: model_version
+  type: string
+  nullable: false
+  description: Version mô hình
+- name: generated_date
+  type: date
+  nullable: false
+  description: Ngày sinh gợi ý

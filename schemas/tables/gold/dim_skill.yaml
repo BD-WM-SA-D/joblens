@@ -1,0 +1,36 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.dim_skill
+version: 0.1.0
+status: draft
+description: 'Danh mục kỹ năng: skill_id xuất hiện trong silver.job_skills kèm nhãn ESCO.'
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model dim_skill
+readers:
+- PTTKHT-joblens
+- Web-mining-joblens
+used_by:
+- UC002
+- UC004
+write_mode: dbt
+partition_spec: []
+primary_key:
+- skill_id
+grain: một kỹ năng
+columns:
+- name: skill_id
+  type: string
+  nullable: false
+  description: Như silver.job_skills.skill_id
+- name: label
+  type: string
+  nullable: false
+  description: Nhãn hiển thị (ESCO preferredLabel hoặc tên nhóm tự đặt)
+- name: esco_uri
+  type: string
+  nullable: true
+  description: URI ESCO; null với kỹ năng 'joblens:*'
+- name: skill_type
+  type: string
+  nullable: true
+  description: skill/competence | knowledge (theo ESCO)

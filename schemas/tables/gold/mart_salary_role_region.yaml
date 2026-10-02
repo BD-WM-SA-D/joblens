@@ -1,0 +1,65 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.mart_salary_role_region
+version: 0.1.0
+status: draft
+description: Mặt bằng lương theo nhóm nghề, cấp bậc, tỉnh/thành (UC003).
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model mart_salary_role_region
+readers:
+- PTTKHT-joblens
+- Web-mining-joblens
+used_by:
+- UC003
+write_mode: dbt
+partition_spec:
+- month
+primary_key:
+- month
+- category_source
+- level_code
+- location_code
+grain: tháng × nhóm nghề × cấp bậc × tỉnh/thành
+columns:
+- name: month
+  type: date
+  nullable: false
+  description: Ngày đầu tháng
+- name: category_source
+  type: string
+  nullable: false
+  description: Nhóm nghề; 'ALL' = mọi nhóm
+- name: level_code
+  type: string
+  nullable: false
+  description: Cấp bậc; 'ALL' = mọi cấp
+- name: location_code
+  type: string
+  nullable: false
+  description: gold.dim_location; 'ALL' = toàn quốc
+- name: job_count
+  type: long
+  nullable: false
+  description: Số tin (đếm theo dup_group_id, sau khi tách tin nhiều địa điểm)
+- name: salary_p25_vnd
+  type: long
+  nullable: true
+  description: Phân vị 25 của trung điểm khoảng lương
+  unit: VND/tháng
+- name: salary_median_vnd
+  type: long
+  nullable: true
+  description: Trung vị
+  unit: VND/tháng
+- name: salary_p75_vnd
+  type: long
+  nullable: true
+  description: Phân vị 75
+  unit: VND/tháng
+- name: negotiable_share
+  type: double
+  nullable: false
+  description: Tỉ lệ tin lương thỏa thuận
+  unit: tỉ lệ 0–1
+notes:
+- Phân vị để null khi job_count có lương < 5 (tránh số liệu ít mẫu).

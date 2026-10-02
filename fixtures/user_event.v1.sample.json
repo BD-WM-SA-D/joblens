@@ -1,0 +1,34 @@
+[
+  {
+    "schema_version": "user_event.v1",
+    "event_id": "6f1d2c3a-0000-4000-8000-000000000001",
+    "user_id": "syn-u-1",
+    "session_id": "syn-s-1",
+    "event_type": "search",
+    "event_ts": "2026-10-01T08:00:00Z",
+    "query": "python data engineer",
+    "filters": { "location_codes": ["01"], "salary_min_vnd": 15000000 },
+    "is_synthetic": true,
+    "generator_version": "0.0.0-fixture"
+  },
+  {
+    "schema_version": "user_event.v1",
+    "event_id": "6f1d2c3a-0000-4000-8000-000000000002",
+    "user_id": "syn-u-1",
+    "session_id": "syn-s-1",
+    "event_type": "view",
+    "event_ts": "2026-10-01T08:00:20Z",
+    "job_uid": "862e0278ea284bae21ffed05e1dafedc6baac559",
+    "position": 1,
+    "is_synthetic": true
+  },
+  {
+    "schema_version": "user_event.v1",
+    "event_id": "6f1d2c3a-0000-4000-8000-000000000003",
+    "user_id": "syn-u-2",
+    "event_type": "apply",
+    "event_ts": "2026-10-01T09:15:00Z",
+    "job_uid": "ccd9e35e86cd16b290ddf6e3acecd8af5efcb346",
+    "is_synthetic": true
+  }
+]

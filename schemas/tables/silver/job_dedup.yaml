@@ -1,0 +1,42 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: silver.job_dedup
+version: 0.1.0
+status: draft
+description: Nhóm tin trùng (WM1). Mỗi job_uid thuộc đúng một dup_group_id; tin không trùng thì dup_group_id = job_uid của chính nó.
+writer_repo: Web-mining-joblens
+writer_component: image job-dedup (KubernetesPodOperator)
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- PTTKHT-joblens
+used_by:
+- UC001
+- UC002
+- UC003
+- WM1
+write_mode: merge
+partition_spec:
+- bucket(16, job_uid)
+primary_key:
+- job_uid
+columns:
+- name: job_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_job_id>') – joblens_contracts.job_uid() (ADR 0001 D5)
+- name: dup_group_id
+  type: string
+  nullable: false
+  description: job_uid đại diện của nhóm (tin xuất hiện sớm nhất)
+- name: score
+  type: double
+  nullable: true
+  description: Độ giống với đại diện (Jaccard ước lượng); null với đại diện
+- name: dedup_version
+  type: string
+  nullable: false
+  description: Version thuật toán/image
+- name: run_id
+  type: string
+  nullable: false
+  description: ID lần chạy Airflow đã ghi dòng này

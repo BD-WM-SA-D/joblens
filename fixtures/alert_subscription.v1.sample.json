@@ -1,0 +1,22 @@
+[
+  {
+    "schema_version": "alert_subscription.v1",
+    "subscription_id": "sub-001",
+    "user_id": "app-user-001",
+    "action": "upsert",
+    "updated_ts": "2026-10-01T07:00:00Z",
+    "criteria": {
+      "keywords": ["python"],
+      "skill_ids": [],
+      "location_codes": ["01"],
+      "salary_min_vnd": 12000000
+    }
+  },
+  {
+    "schema_version": "alert_subscription.v1",
+    "subscription_id": "sub-002",
+    "user_id": "app-user-002",
+    "action": "delete",
+    "updated_ts": "2026-10-01T07:30:00Z"
+  }
+]

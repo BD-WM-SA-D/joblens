@@ -28,7 +28,7 @@ Tài liệu này ghi lại những gì đã kiểm tra thực tế ở các ngu�
 | Các cột kỹ năng là đầu ra của LLM | Chỉ dùng làm **nhãn yếu** cho WM2; tập test phải do nhóm tự gán nhãn. Có thể dùng chính cách trích bằng LLM của họ làm một baseline để so sánh |
 | Schema gốc có `company_name`, `posting_date`, `deadline`, `url`, nhưng **file mẫu không có các cột này** (18 cột) | Nếu bản đầy đủ cũng thiếu: VietJobs không dùng được cho phân tích theo công ty hay theo thời gian, và không nối được với tin nhóm tự crawl theo URL/ID → chỉ dùng làm backfill phân bố nghề/lương/kỹ năng và làm baseline |
 | Các cột danh sách lưu dạng chuỗi `"['a', 'b']"` | Phải parse (`ast.literal_eval`) khi nạp vào bronze/silver |
-| `salary_min`/`salary_max` là số nguyên đã cắt (9,4 → 9); `salary_avg` lệch trung điểm (khoảng 9,4–12 ghi "10 triệu") | **Tự tính lại lương từ chuỗi `salary`**; đây là một expectation tốt cho Great Expectations |
+| `salary_min`/`salary_max` là số nguyên đã cắt (9,4 → 9); `salary_avg` lệch trung điểm (khoảng 9,4–12 ghi "10 triệu") | **Tự tính lại lương từ chuỗi `salary`** (BD làm khi backfill – ADR 0001 D2); đây là một expectation tốt cho Great Expectations |
 | `location` viết thường, có tin nhiều tỉnh (`"hà nội, hồ chí minh"` – 1/5 dòng mẫu); mô tả có chữ "TP HCM (cũ)" | Tách (explode) địa điểm trước khi làm `mart_salary_role_region`; chuẩn hóa về 34 tỉnh/thành sau sắp xếp 2025 |
 | `category` là 16 nhãn dạng slug (`nông_nghiệp_năng_lượng_môi_trường`), trong khi TopCV có 24 nhóm ngành | Cần bảng ánh xạ nhóm ngành TopCV → 16 nhãn VietJobs nếu muốn so sánh với baseline |
 | 3/5 dòng mẫu (ngành không phải IT) không có `technical_skills` | WM2 nên tập trung vào ngành IT trước |

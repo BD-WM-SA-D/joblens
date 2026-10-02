@@ -4,6 +4,15 @@ Quy ước ghi: [repo-routing – Nhật ký thay đổi](docs/repo-routing.md#n
 
 ## 2026-10-02 · Hoang Le · chưa có PR
 
+- **Tạo:** `schemas/kafka/{review,user_event,parse_error,alert_subscription,job_match}.v1.json` (A); 16 contract `schemas/tables/{bronze,silver,gold}/*.yaml` + `schemas/tables/_contract.schema.json` (A); `schemas/api/search.v1.yaml` (A); `schemas/README.md` (A); 5 fixture mới `fixtures/*.v1.sample.json` (A); `tests/test_contracts.py` (D)
+- **Sửa:** `schemas/kafka/job_posting.v1.json` (A – 1.1.0, thêm `raw_html_uri`); `fixtures/job_posting.v1.sample.json`, `fixtures/README.md` (A); `joblens_contracts/__init__.py` (A – `job_uid()`, `load_table_contract()`, v0.2.0); `pyproject.toml` (D – thêm pyyaml, pin ruff 0.8.0 cho CI); `docs/project-plan/02, 03, 04, 05, 07, 08, 09, 10, 11, 13, README.md, templates/README-repo.md` (A – tên repo/org thật, các điểm "Kéo theo" của ADR 0001, bỏ "template repository"); `templates/env.example`, `templates/gitignore.template`, `templates/pre-commit-config.yaml`, `templates/agents/*.md` (A – bản gốc mục C); `.env.example`, `.gitignore`, `.pre-commit-config.yaml`, `AGENTS.md` (C – đồng bộ); `docs/repo-routing.md`, `glossary.md`, `docs/adr/0001-…` (A); `README.md` (D)
+- **Xóa:** `schemas/tables/{bronze,silver,gold}/.gitkeep`
+- **Lý do:** cài đặt sẵn các phương án đề xuất của ADR 0001 (D1–D7) để các repo có hợp đồng làm việc song song; contract ở trạng thái `draft` cho tới khi nhóm duyệt ADR
+- **Ảnh hưởng repo khác:** cả 3 repo môn – `.env.example` thêm biến đăng nhập (D7), `AGENTS.md` cập nhật phạm vi theo ADR; khi ADR được duyệt, mỗi repo làm phần việc ở bảng "Tổng hợp" của ADR
+- **AI:** Claude Code (Claude Opus 5.5) – soạn schema, contract, script, sửa docs theo phương án đề xuất của ADR 0001; <người kiểm tra> đã kiểm tra
+
+## 2026-10-02 · Hoang Le · chưa có PR
+
 - **Tạo:** `docs/adr/0001-ranh-gioi-xu-ly-giua-cac-repo.md` (A)
 - **Sửa:** `adr-index.md` (A)
 - **Xóa:** –

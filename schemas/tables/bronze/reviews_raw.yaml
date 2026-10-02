@@ -1,0 +1,62 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: bronze.reviews_raw
+version: 0.1.0
+status: draft
+description: Message reviews.raw.*.v1 nạp nguyên trạng từ Kafka. Nguồn đầu vào của ABSA (WM3).
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: 'spark-jobs: streaming bronze'
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- Web-mining-joblens
+used_by:
+- WM3
+- UC005
+write_mode: append
+partition_spec:
+- days(ingest_ts)
+primary_key:
+- kafka_topic
+- kafka_partition
+- kafka_offset
+columns:
+- name: kafka_topic
+  type: string
+  nullable: false
+  description: Topic nguồn
+- name: kafka_partition
+  type: int
+  nullable: false
+  description: Partition
+- name: kafka_offset
+  type: long
+  nullable: false
+  description: Offset
+- name: ingest_ts
+  type: timestamp
+  nullable: false
+  description: Thời điểm ghi vào bronze (UTC)
+- name: source
+  type: string
+  nullable: false
+  description: itviec | synthetic
+- name: source_review_id
+  type: string
+  nullable: false
+  description: ID review trên nguồn
+- name: company_id
+  type: string
+  nullable: false
+  description: ID công ty trên nguồn (Kafka key)
+- name: crawl_ts
+  type: timestamp
+  nullable: false
+  description: Thời điểm crawl
+- name: content_hash
+  type: string
+  nullable: false
+  description: SHA-256 payload
+- name: payload_json
+  type: string
+  nullable: false
+  description: Payload nguyên trạng dạng JSON

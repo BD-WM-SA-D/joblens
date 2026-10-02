@@ -19,7 +19,7 @@ Ký hiệu: **A** = môn chấm chính, **R** = chỉ tham chiếu, **–** = kh
 | Tập gán nhãn, mô hình IE/ABSA/IR/RecSys/Graph, thí nghiệm & metric mô hình | R (chỉ nói job chạy trên Spark) | **A** | R (UC tiêu thụ kết quả) |
 | Mô hình nghiệp vụ, UC, user story, NFR, UML, mẫu thiết kế, 4+1 | – | – | **A** |
 | Cổng JobLens (API + UI), kịch bản kiểm thử chấp nhận | – | R (demo kết quả) | **A** |
-| **Repo nộp** | `joblens-platform` | `joblens-mining` | `joblens-app` |
+| **Repo nộp** | `Big-Data-Storage-and-Processing-joblens` | `Web-mining-joblens` | `PTTKHT-joblens` |
 
 ## Các quy tắc
 
@@ -40,11 +40,11 @@ Ký hiệu: **A** = môn chấm chính, **R** = chỉ tham chiếu, **–** = kh
 
 Không dán cùng một hình vào hai báo cáo.
 
-**R6 – Mỗi môn một repo, mỗi việc một nhãn.** Code và tài liệu tách thành 4 repo trong GitHub Organization: `joblens-platform` (link nộp BD), `joblens-mining` (link nộp WM), `joblens-app` (link nộp SA&D) và `joblens-contracts` (dùng chung). Chi tiết cấu trúc, cách nối các repo và phân quyền: [Tổ chức repo và GitHub](08-to-chuc-repo-va-github.md). Trong từng repo:
+**R6 – Mỗi môn một repo, mỗi việc một nhãn.** Code và tài liệu tách thành 4 repo trong GitHub Organization: `Big-Data-Storage-and-Processing-joblens` (link nộp BD), `Web-mining-joblens` (link nộp WM), `PTTKHT-joblens` (link nộp SA&D) và `joblens` (dùng chung). Chi tiết cấu trúc, cách nối các repo và phân quyền: [Tổ chức repo và GitHub](08-to-chuc-repo-va-github.md). Trong từng repo:
 
 - Mỗi issue/PR có đúng một người phụ trách; việc chạm tới repo khác gắn nhãn `cross-repo`.
 - Mỗi người commit vào repo của môn mình học (R7), nên lịch sử commit của từng repo là bằng chứng đóng góp sạch cho môn đó.
-- Nguồn báo cáo của môn nằm trong `docs/` của chính repo môn đó; glossary và ADR index dùng chung nằm ở `joblens-contracts`.
+- Nguồn báo cáo của môn nằm trong `docs/` của chính repo môn đó; glossary và ADR index dùng chung nằm ở `joblens`.
 
 **R7 – Người đứng tên theo môn đăng ký học.** Nhóm lập bảng đăng ký (ai học môn nào). Chủ của một phần phải là người học môn chấm phần đó; người không học môn đó có thể hỗ trợ nhưng không đứng tên đóng góp chính trong báo cáo môn ấy.
 
@@ -72,9 +72,9 @@ Không dán cùng một hình vào hai báo cáo.
 
 | Môn | Git tag (repo) | Ghi kèm trong release note |
 |---|---|---|
-| Big Data | `report-bd-v1` (`joblens-platform`) | Iceberg tag, version `joblens-contracts`, tag image mining/app đang chạy |
-| Web Mining | `report-wm-v1` (`joblens-mining`) | Iceberg snapshot dùng để train/test, version model |
-| SA&D | `report-sad-v1` (`joblens-app`) | Version platform + contracts dùng khi kiểm thử chấp nhận |
+| Big Data | `report-bd-v1` (`Big-Data-Storage-and-Processing-joblens`) | Iceberg tag, version `joblens`, tag image mining/app đang chạy |
+| Web Mining | `report-wm-v1` (`Web-mining-joblens`) | Iceberg snapshot dùng để train/test, version model |
+| SA&D | `report-sad-v1` (`PTTKHT-joblens`) | Version platform + contracts dùng khi kiểm thử chấp nhận |
 
 ## Khung báo cáo gợi ý cho từng môn
 

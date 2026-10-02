@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BD-WM-SA-D/joblens/schemas/kafka/alert_subscription.v1.json",
+  "x-version": "1.0.0",
+  "title": "alert_subscription v1",
+  "description": "Đăng ký cảnh báo tin mới (UC006) trên topic app.alert_subscriptions.v1 (compacted). Kafka key = subscription_id. Repo ghi: PTTKHT-joblens (app). Đọc: Big-Data-Storage-and-Processing-joblens (job streaming ghép cảnh báo). Không chứa email/SĐT – app tự giữ kênh liên lạc. ADR 0001 D4b.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subscription_id", "user_id", "action", "updated_ts"],
+  "properties": {
+    "schema_version": { "const": "alert_subscription.v1" },
+    "subscription_id": { "type": "string", "minLength": 1 },
+    "user_id": { "description": "ID tài khoản trong app (không phải email).", "type": "string", "minLength": 1 },
+    "action": { "enum": ["upsert", "delete"] },
+    "updated_ts": { "type": "string", "format": "date-time" },
+    "criteria": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "keywords": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "skill_ids": { "type": "array", "items": { "type": "string" } },
+        "location_codes": { "type": "array", "items": { "type": "string" } },
+        "salary_min_vnd": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "action": { "const": "upsert" } } },
+      "then": { "required": ["criteria"], "properties": { "criteria": { "type": "object" } } }
+    }
+  ]
+}

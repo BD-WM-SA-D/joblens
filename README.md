@@ -29,20 +29,25 @@ pytest -q
 ```
 
 ```python
-from joblens_contracts import load_schema, fixture_path
+from joblens_contracts import load_schema, load_table_contract, fixture_path, job_uid
 schema = load_schema("job_posting.v1")
+contract = load_table_contract("silver.job_skills")
+uid = job_uid("topcv", "123456")
 ```
 
 ## Cấu trúc thư mục
 
 ```
-schemas/kafka/          JSON Schema cho từng topic (job_posting.v1 cho jobs.raw.<nguồn>.v1)
-schemas/tables/         data contract YAML cho bronze/ silver/ gold/ (chưa có)
+schemas/README.md       bảng tra: topic/bảng/API nào, repo nào ghi, repo nào đọc
+schemas/kafka/          JSON Schema cho 6 topic (job_posting, review, user_event, parse_error, alert_subscription, job_match)
+schemas/tables/         contract YAML cho bảng bronze/ silver/ gold/ (định dạng: _contract.schema.json)
+schemas/api/            hợp đồng API (search.v1.yaml – OpenAPI 3.1)
 fixtures/               dữ liệu mẫu rất nhỏ, có ghi nguồn và giấy phép
 joblens_contracts/      package Python nhỏ trả đường dẫn tới schema/fixtures
 scripts/                validate_fixtures.py (CI), sync_templates.py (đồng bộ file cấu hình chung sang 4 repo)
 tests/                  pytest
-docs/project-plan/      bộ tài liệu kế hoạch dự án (01–13, mẫu repo)
+docs/adr/               ADR chung giữa các repo (0001: ranh giới xử lý)
+docs/project-plan/      bộ tài liệu kế hoạch dự án (01–13) và bản gốc file cấu hình chung (templates/)
 explore/                script khám phá dữ liệu (VietJobs EDA)
 AGENTS.md, CLAUDE.md    quy tắc cho AI agent (Codex, Claude Code, Cursor)
 NHAT-KY.md              nhật ký thay đổi

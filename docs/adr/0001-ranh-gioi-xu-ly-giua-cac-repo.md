@@ -7,6 +7,7 @@
 | **Người soạn** | Hoang Le (nháp bằng Claude Code) |
 | **Cần đồng ý** | Người phụ trách BD: <Họ tên> · WM: <Họ tên> · SAD: <Họ tên> |
 | **Ảnh hưởng** | cả 4 repo (`cross-repo`) |
+| **Bản cài đặt** | Đã làm sẵn theo phương án đề xuất trong `joblens` v0.2.0 (contract ở trạng thái `draft`): schema, contract bảng, API tìm kiếm, `job_uid()`, biến D7, sửa docs kế hoạch. Điểm nào nhóm bác thì sửa ngược lại trước khi chuyển contract sang `stable` |
 
 ## Vì sao cần ADR này
 

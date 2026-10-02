@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BD-WM-SA-D/joblens/schemas/kafka/review.v1.json",
+  "x-version": "1.0.0",
+  "title": "review v1",
+  "description": "Review công ty trên topic reviews.raw.<nguồn>.v1 (reviews.raw.itviec.v1). Kafka key = company_id. Repo ghi: Web-mining-joblens (crawler). Không chứa thông tin người review (ẩn danh, không lưu tên/chức danh).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "source_review_id", "company_id", "url", "crawl_ts", "content_hash", "payload"],
+  "properties": {
+    "schema_version": { "const": "review.v1" },
+    "source": { "enum": ["itviec", "synthetic"] },
+    "source_review_id": { "description": "ID review trên trang nguồn; nếu trang không có thì là hash nội dung review.", "type": "string", "minLength": 1 },
+    "company_id": { "description": "ID công ty trên trang nguồn (slug). Là partition key.", "type": "string", "minLength": 1 },
+    "url": { "type": "string", "format": "uri" },
+    "crawl_ts": { "type": "string", "format": "date-time" },
+    "content_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "raw_html_uri": { "type": ["string", "null"], "pattern": "^s3://" },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["company_name"],
+      "properties": {
+        "company_name": { "type": "string", "minLength": 1 },
+        "review_month": { "description": "Tháng/năm của review, dạng YYYY-MM.", "type": ["string", "null"], "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$" },
+        "rating_overall": { "type": ["number", "null"], "minimum": 1, "maximum": 5 },
+        "aspect_ratings": {
+          "description": "Điểm 1–5 theo 5 khía cạnh của ITviec.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "salary_benefits": { "type": ["number", "null"], "minimum": 1, "maximum": 5 },
+            "training_learning": { "type": ["number", "null"], "minimum": 1, "maximum": 5 },
+            "management_care": { "type": ["number", "null"], "minimum": 1, "maximum": 5 },
+            "culture_fun": { "type": ["number", "null"], "minimum": 1, "maximum": 5 },
+            "office_workspace": { "type": ["number", "null"], "minimum": 1, "maximum": 5 }
+          }
+        },
+        "recommend": { "type": ["boolean", "null"] },
+        "title": { "type": ["string", "null"] },
+        "liked_text": { "description": "Phần \"What I liked\".", "type": ["string", "null"] },
+        "improvement_text": { "description": "Phần \"Suggestions for improvement\".", "type": ["string", "null"] }
+      }
+    }
+  }
+}

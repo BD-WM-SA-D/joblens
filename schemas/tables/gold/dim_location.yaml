@@ -1,0 +1,36 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.dim_location
+version: 0.1.0
+status: draft
+description: Danh mục 34 tỉnh/thành sau sắp xếp 2025 (dbt seed).
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt seed dim_location
+readers:
+- PTTKHT-joblens
+- Web-mining-joblens
+used_by:
+- UC001
+- UC003
+write_mode: dbt
+partition_spec: []
+primary_key:
+- location_code
+grain: một tỉnh/thành
+columns:
+- name: location_code
+  type: string
+  nullable: false
+  description: Mã đơn vị hành chính 2 chữ số, ví dụ 01 Hà Nội, 79 TP.HCM
+- name: name
+  type: string
+  nullable: false
+  description: Tên chính thức
+- name: region
+  type: string
+  nullable: false
+  description: north | central | south
+- name: aliases
+  type: list<string>
+  nullable: false
+  description: Cách viết khác trên nguồn, ví dụ 'tp hcm', 'hồ chí minh', 'TP HCM (cũ)'

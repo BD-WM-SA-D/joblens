@@ -6,10 +6,12 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 
 | Môn | Câu hỏi môn này chấm | Repo nộp |
 |---|---|---|
-| IT4931 Big Data Storage and Processing | Dữ liệu được di chuyển, lưu trữ, xử lý ở quy mô lớn thế nào, vì sao chọn như vậy? | `joblens-platform` |
-| Web Mining | Tri thức gì được khai phá từ dữ liệu web, bằng kỹ thuật nào, tốt đến đâu? | `joblens-mining` |
-| IT3120 Phân tích thiết kế hệ thống | Hệ thống phục vụ ai, cần đáp ứng gì, được thiết kế thế nào? | `joblens-app` |
+| IT4931 Big Data Storage and Processing | Dữ liệu được di chuyển, lưu trữ, xử lý ở quy mô lớn thế nào, vì sao chọn như vậy? | `Big-Data-Storage-and-Processing-joblens` |
+| Web Mining | Tri thức gì được khai phá từ dữ liệu web, bằng kỹ thuật nào, tốt đến đâu? | `Web-mining-joblens` |
+| IT3120 Phân tích thiết kế hệ thống | Hệ thống phục vụ ai, cần đáp ứng gì, được thiết kế thế nào? | `PTTKHT-joblens` |
 
+> **Cập nhật 02/10/2026:** tên repo/org theo GitHub thật (`BD-WM-SA-D`); ranh giới xử lý giữa các repo theo [ADR 0001](../adr/0001-ranh-gioi-xu-ly-giua-cac-repo.md) (đang chờ nhóm duyệt); hợp đồng dữ liệu ở [`schemas/`](../../schemas/README.md).
+>
 > **Trạng thái: ĐỀ XUẤT – v1 (29/09/2026).** Lựa chọn công nghệ, chỉ tiêu và lịch là đề xuất, cần nhóm thống nhất và giảng viên xác nhận (xem [câu hỏi cho giảng viên](11-rui-ro-va-cau-hoi.md#câu-hỏi-cần-xác-nhận-với-giảng-viên)). Bộ tài liệu này thay cho file đơn `de-xuat-du-an-lien-mon-JobLens.md` trước đó.
 
 ## Mục lục
@@ -29,7 +31,7 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 | 11 | [Rủi ro và câu hỏi cho giảng viên](11-rui-ro-va-cau-hoi.md) | Rủi ro + dự phòng, câu hỏi cần xác nhận |
 | 12 | [Tài liệu tham khảo](12-tai-lieu-tham-khao.md) | Bài giảng, bài báo, tài liệu công nghệ, dataset, pháp lý |
 | 13 | [Khám phá dữ liệu trước khi làm](13-kham-pha-du-lieu.md) | Kết quả xem thực tế VietJobs, TopCV, ITviec, ESCO, UIT-VSFC; cách tự xem; script `explore/01_vietjobs_eda.py` |
-| – | [Mẫu README repo](templates/README-repo.md) · [Mẫu CONTRIBUTING](templates/CONTRIBUTING.md) · [`.gitignore` mẫu](templates/gitignore.template) · [pre-commit mẫu](templates/pre-commit-config.yaml) | Dùng khi tạo template repository |
+| – | [Mẫu README repo](templates/README-repo.md) · [Mẫu CONTRIBUTING](templates/CONTRIBUTING.md) · [`.gitignore` mẫu](templates/gitignore.template) · [pre-commit mẫu](templates/pre-commit-config.yaml) | Bản gốc file cấu hình chung – đồng bộ sang 4 repo bằng `scripts/sync_templates.py` |
 
 ## Đọc theo vai trò
 
@@ -51,6 +53,6 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 
 - [ ] Điền bảng đăng ký môn của từng thành viên ([R7](07-quy-tac-phan-tach-mon.md)).
 - [ ] Gửi câu hỏi cho ba giảng viên, nhất là việc dùng chung đề tài và phạm vi Kubernetes ([11](11-rui-ro-va-cau-hoi.md#câu-hỏi-cần-xác-nhận-với-giảng-viên)).
-- [ ] Tạo GitHub Organization, template repository và 4 repo ([08](08-to-chuc-repo-va-github.md)).
+- [x] Tạo GitHub Organization `BD-WM-SA-D` và 4 repo ([08](08-to-chuc-repo-va-github.md)); file cấu hình chung đồng bộ bằng `scripts/sync_templates.py` thay cho template repository.
 - [ ] Chốt `versions.md` và bộ biến môi trường `JOBLENS_*` ([09](09-quy-tac-lam-viec-chung.md)).
 - [ ] Crawl thử 1–2 tuần để đo khối lượng thật, cập nhật ước lượng 5V ([02](02-du-lieu.md)).

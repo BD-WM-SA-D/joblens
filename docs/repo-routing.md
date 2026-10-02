@@ -1,6 +1,6 @@
 # File nào lên repo nào
 
-Bảng tra cụ thể cho từng loại file. Nền tảng: [ma trận sở hữu](project-plan/07-quy-tac-phan-tach-mon.md#ma-trận-sở-hữu) (mỗi artifact một môn chấm chính), [cấu trúc repo](project-plan/08-to-chuc-repo-va-github.md) và [quy tắc 2, 8](project-plan/09-quy-tac-lam-viec-chung.md).
+Bảng tra cụ thể cho từng loại file. Nền tảng: [ma trận sở hữu](project-plan/07-quy-tac-phan-tach-mon.md#ma-trận-sở-hữu) (mỗi artifact một môn chấm chính), [cấu trúc repo](project-plan/08-to-chuc-repo-va-github.md) và [quy tắc 2, 8](project-plan/09-quy-tac-lam-viec-chung.md). Ranh giới *bước xử lý nào do repo nào làm*: [ADR 0001](adr/0001-ranh-gioi-xu-ly-giua-cac-repo.md). Ai ghi/đọc từng topic, bảng: [`schemas/README.md`](../schemas/README.md).
 
 ## Ký hiệu
 
@@ -100,6 +100,9 @@ Sửa nhỏ trong file mục B/D chỉ cần một dòng tóm tắt. Mục mới
 |---|---|
 | JSON Schema message Kafka | `schemas/kafka/job_posting.v1.json`, `review.v1.json`, `user_event.v1.json` |
 | Data contract bảng bronze/silver/gold | `schemas/tables/silver/job_postings.yaml`, `schemas/tables/gold/mart_salary_role_region.yaml` |
+| Hợp đồng API giữa các repo | `schemas/api/search.v1.yaml` |
+| Bảng tra ai ghi/đọc topic, bảng, API | `schemas/README.md` |
+| ADR chung giữa các repo | `docs/adr/0001-ranh-gioi-xu-ly-giua-cac-repo.md` |
 | Dữ liệu mẫu có giấy phép (< 5 MB) | `fixtures/*.sample.json` |
 | Thuật ngữ, phiên bản, danh mục ADR | `glossary.md`, `versions.md`, `adr-index.md` |
 | Tài liệu kế hoạch dự án, mẫu cấu hình gốc | `docs/project-plan/**`, `docs/project-plan/templates/**` |
@@ -187,7 +190,10 @@ Chỉ trùng tên file. Nội dung mỗi repo tự viết, không chép giữa c
 |---|---|---|---|---|
 | Đưa tin tuyển dụng vào Kafka | schema `schemas/kafka/job_posting.v1.json` | khai báo topic `deploy/kafka/topics/…yaml` | code producer `crawler/producer.py` | – |
 | Chạy mô hình trích kỹ năng trong pipeline | contract bảng `schemas/tables/silver/job_skills.yaml` | DAG gọi image theo tag `airflow/dags/…py` | code mô hình + `images/skill-extractor/Dockerfile` + `models.yaml` | – |
-| Dedup tin trùng | – | Spark job silver chỉ **gọi** thư viện/image dedup theo version | thuật toán + đánh giá P/R/F1 | – |
+| Dedup tin trùng | contract `silver.job_dedup`, hàm `job_uid()` | DAG gọi image `job-dedup`; gold đếm theo `dup_group_id` | thuật toán + đánh giá P/R/F1 + image `job-dedup` | – |
+| Chuẩn hóa lương, địa điểm, cấp bậc | contract `silver.job_postings` | quy tắc chuẩn hóa + GX + dbt seed `dim_location` | – (WM2 chỉ trích kỹ năng) | – |
+| Tìm kiếm việc làm (UC001) | `schemas/api/search.v1.yaml` | triển khai image `search-service` trên K8s | chỉ mục + image `search-service` | gọi API, lùi về Trino khi không có |
+| Cảnh báo tin mới (UC006) | schema `alert_subscription.v1`, `job_match.v1` | khai báo 2 topic; job streaming ghép, ghi `alerts.job_match.v1` | – | ghi `app.alert_subscriptions.v1`, đọc kết quả, gửi thông báo |
 | Kiến trúc triển khai | – | manifest/Helm thật + sơ đồ zone/luồng dữ liệu trong `docs/` | – | deployment diagram **UML** trong `uml/` (vẽ lại theo ký pháp UML, R5) |
 | Số đo hiệu năng (p95, freshness) | – | đo và phân tích `benchmarks/` | – | **chỉ trích** số + dẫn tag `report-bd-v1` trong chương 6 (R4) |
 | Dữ liệu tương tác người dùng | schema `user_event.v1.json` | `event-generator/` (repo ghi topic) | đọc để làm RecSys/Query mining | dùng làm kịch bản tải NFR |

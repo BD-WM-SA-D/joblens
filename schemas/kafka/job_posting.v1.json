@@ -1,18 +1,32 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/BD-WM-SA-D/joblens/schemas/kafka/job_posting.v1.json",
+  "x-version": "1.1.0",
   "title": "job_posting v1",
-  "description": "Message tin tuyển dụng thô trên các topic jobs.raw.<nguồn>.v1 (ví dụ jobs.raw.topcv.v1). Kafka key = source_job_id. Không chứa dữ liệu cá nhân: không có tên/email/SĐT người liên hệ (docs/02, Luật 91/2025/QH15).",
+  "description": "Message tin tuyển dụng thô trên các topic jobs.raw.<nguồn>.v1 (ví dụ jobs.raw.topcv.v1). Kafka key = source_job_id. Không chứa dữ liệu cá nhân: không có tên/email/SĐT người liên hệ (docs/02, Luật 91/2025/QH15). Bản 1.1.0 thêm raw_html_uri (ADR 0001 D1).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "source", "source_job_id", "url", "crawl_ts", "content_hash", "payload"],
+  "required": [
+    "schema_version",
+    "source",
+    "source_job_id",
+    "url",
+    "crawl_ts",
+    "content_hash",
+    "payload"
+  ],
   "properties": {
     "schema_version": {
       "const": "job_posting.v1"
     },
     "source": {
       "description": "Nguồn dữ liệu. 'vietjobs' dùng khi replay dataset VietJobs; 'synthetic' chỉ dùng cho fixtures/kiểm thử.",
-      "enum": ["topcv", "itviec", "vietjobs", "synthetic"]
+      "enum": [
+        "topcv",
+        "itviec",
+        "vietjobs",
+        "synthetic"
+      ]
     },
     "source_job_id": {
       "description": "ID tin trên trang nguồn, ví dụ phần {id} trong /viec-lam/{slug}/{id}.html của TopCV. Là partition key của topic.",
@@ -30,7 +44,10 @@
     },
     "lastmod": {
       "description": "Giá trị <lastmod> trong sitemap, nếu có (phục vụ crawl tăng dần).",
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time"
     },
     "content_hash": {
@@ -38,33 +55,112 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "raw_html_uri": {
+      "description": "Đường dẫn HTML thô đã lọc PII trên object storage, ví dụ s3://joblens/raw-html/topcv/2026-10-01/123.html.gz. Không bắt buộc (thêm ở 1.1.0).",
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^s3://"
+    },
     "payload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["title"],
+      "required": [
+        "title"
+      ],
       "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "company_name": { "type": ["string", "null"] },
-        "company_id": { "description": "ID công ty trên trang nguồn, nếu có.", "type": ["string", "null"] },
-        "salary_text": { "description": "Chuỗi lương nguyên gốc, ví dụ 'Thỏa thuận', '15 - 25 triệu', 'Từ 2 triệu'. Chuẩn hóa ở silver.", "type": ["string", "null"] },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "company_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "company_id": {
+          "description": "ID công ty trên trang nguồn, nếu có.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "salary_text": {
+          "description": "Chuỗi lương nguyên gốc, ví dụ 'Thỏa thuận', '15 - 25 triệu', 'Từ 2 triệu'. Chuẩn hóa ở silver.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "locations": {
           "description": "Danh sách tỉnh/thành nguyên gốc (một tin có thể nhiều địa điểm). Chuẩn hóa về 34 tỉnh/thành ở silver.",
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "experience_text": { "type": ["string", "null"] },
-        "level": { "description": "Cấp bậc nguyên gốc.", "type": ["string", "null"] },
-        "employment_type": { "description": "Hình thức làm việc/loại hợp đồng nguyên gốc.", "type": ["string", "null"] },
-        "category": { "description": "Nhóm nghề theo trang nguồn.", "type": ["string", "null"] },
-        "deadline": { "description": "Hạn nộp hồ sơ.", "type": ["string", "null"], "format": "date" },
+        "experience_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "level": {
+          "description": "Cấp bậc nguyên gốc.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "employment_type": {
+          "description": "Hình thức làm việc/loại hợp đồng nguyên gốc.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "description": "Nhóm nghề theo trang nguồn.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "deadline": {
+          "description": "Hạn nộp hồ sơ.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
         "skill_tags": {
           "description": "Tag kỹ năng do nhà tuyển dụng gắn (nhãn yếu cho WM2).",
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "description": { "type": ["string", "null"] },
-        "requirements": { "type": ["string", "null"] },
-        "benefits": { "type": ["string", "null"] }
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "requirements": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "benefits": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     }
   }

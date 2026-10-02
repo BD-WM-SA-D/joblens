@@ -1,0 +1,62 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: silver.job_skills
+version: 0.1.0
+status: draft
+description: Kỹ năng trích từ tin (WM2), đã chuẩn hóa về ESCO/alias. Do image skill-extractor của WM ghi, Airflow của BD chạy (ADR 0001 D3).
+writer_repo: Web-mining-joblens
+writer_component: image skill-extractor (KubernetesPodOperator)
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- PTTKHT-joblens
+used_by:
+- UC002
+- UC004
+- WM2
+- WM5
+- WM6
+write_mode: overwrite_partition
+partition_spec:
+- bucket(16, job_uid)
+primary_key:
+- job_uid
+- field
+- span_start
+- span_end
+columns:
+- name: job_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_job_id>') – joblens_contracts.job_uid() (ADR 0001 D5)
+- name: skill_id
+  type: string
+  nullable: false
+  description: ESCO skill URI, hoặc 'joblens:<slug>' nếu ESCO không có
+- name: surface_form
+  type: string
+  nullable: false
+  description: Chuỗi kỹ năng như trong văn bản
+- name: field
+  type: string
+  nullable: false
+  description: description | requirements | skill_tags
+- name: span_start
+  type: int
+  nullable: false
+  description: 'Vị trí ký tự bắt đầu trong field (skill_tags: chỉ số tag)'
+- name: span_end
+  type: int
+  nullable: false
+  description: Vị trí ký tự kết thúc (không gồm)
+- name: confidence
+  type: double
+  nullable: false
+  description: Độ tin cậy 0–1
+- name: extractor_version
+  type: string
+  nullable: false
+  description: Version image, ví dụ 1.2.0-a1b2c3d
+- name: run_id
+  type: string
+  nullable: false
+  description: ID lần chạy Airflow đã ghi dòng này

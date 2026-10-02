@@ -1,13 +1,14 @@
 [project]
 name = "joblens-contracts"
-version = "0.1.0"
-description = "Hợp đồng dữ liệu dùng chung của JobLens VN: JSON Schema topic Kafka, data contract bảng, fixtures."
+version = "0.2.0"
+description = "Hợp đồng dữ liệu dùng chung của JobLens VN: JSON Schema topic Kafka, contract bảng, hợp đồng API, fixtures, job_uid()."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = ["pyyaml>=6"]
 
 [project.optional-dependencies]
-dev = ["jsonschema>=4.23", "pytest>=8", "ruff>=0.8"]
+# ruff pin cùng bản với hook ruff trong .pre-commit-config.yaml để CI và máy cá nhân kiểm tra giống nhau
+dev = ["jsonschema>=4.23", "pytest>=8", "ruff==0.8.0"]
 
 [build-system]
 requires = ["hatchling"]

@@ -7,9 +7,9 @@ Mỗi môn cần dẫn một link repo riêng, nên dự án chia thành **4 rep
 ## Cấu trúc 4 repo
 
 ```
-joblens-vn/                     (GitHub Organization)
+BD-WM-SA-D/                     (GitHub Organization)
 │
-├── joblens-contracts           ← dùng chung, nhỏ, có version (v1.0.0, v1.1.0…)
+├── joblens           ← dùng chung, nhỏ, có version (v1.0.0, v1.1.0…)
 │   ├── schemas/kafka/          # JSON Schema cho từng topic (jobs.raw.*, reviews.raw.*, events.user…)
 │   ├── schemas/tables/         # data contract YAML cho bronze/silver/gold
 │   ├── fixtures/               # dữ liệu mẫu nhỏ (~1k tin từ VietJobs, có ghi nguồn + giấy phép)
@@ -17,7 +17,7 @@ joblens-vn/                     (GitHub Organization)
 │   ├── versions.md             # pin phiên bản Spark/Iceberg/Kafka/Trino/…
 │   └── adr-index.md            # danh mục ADR của cả 3 repo
 │
-├── joblens-platform            ← link nộp môn BIG DATA
+├── Big-Data-Storage-and-Processing-joblens            ← link nộp môn BIG DATA
 │   ├── deploy/                 # Helm values, manifest K8s, cấu hình k3d – nơi DUY NHẤT ghép toàn hệ thống
 │   │   └── compat.md           # bảng phiên bản: platform x mining x app x contracts
 │   ├── spark-jobs/             # streaming bronze, batch backfill, silver jobs, compaction
@@ -28,7 +28,7 @@ joblens-vn/                     (GitHub Organization)
 │   ├── benchmarks/             # batch vs streaming, Trino p95, lag…
 │   └── docs/                   # nguồn báo cáo BD + ADR (Lambda/Kappa, catalog, object storage)
 │
-├── joblens-mining              ← link nộp môn WEB MINING
+├── Web-mining-joblens              ← link nộp môn WEB MINING
 │   ├── crawler/                # spiders, parser, dedup, producer ghi vào Kafka
 │   ├── ie/  absa/  retrieval/  recsys/  graph/
 │   ├── annotation/             # guideline gán nhãn, chỉ số κ (không commit dữ liệu crawl thô)
@@ -36,7 +36,7 @@ joblens-vn/                     (GitHub Organization)
 │   ├── images/                 # Dockerfile cho các job mô hình (skill-extractor, absa-scorer…)
 │   └── docs/                   # nguồn báo cáo WM
 │
-└── joblens-app                 ← link nộp môn PHÂN TÍCH THIẾT KẾ HỆ THỐNG
+└── PTTKHT-joblens                 ← link nộp môn PHÂN TÍCH THIẾT KẾ HỆ THỐNG
     ├── api/  web/
     ├── uml/                    # PlantUML / draw.io: UC, ECB, sequence, state, package, deployment
     ├── requirements/           # user story, đặc tả UC, NFR
@@ -52,8 +52,10 @@ Repo nào cũng có `README.md` theo [mẫu](templates/README-repo.md) (mở đ�
 |---|---|---|
 | mining → platform (dữ liệu) | Crawler ghi message vào Kafka | `schemas/kafka/*.json` |
 | mining → platform (mô hình) | Mô hình đóng thành Docker image có tag, ví dụ `skill-extractor:1.2.0-a1b2c3d`; Airflow bên platform chạy bằng KubernetesPodOperator | Input/output là các bảng trong `schemas/tables/` |
-| platform → app | App chỉ **đọc** gold qua Trino | `schemas/tables/gold/*.yaml` |
-| contracts → mọi repo | Cài theo git tag cố định: `pip install git+https://github.com/joblens-vn/joblens-contracts@v1.1.0` | SemVer |
+| platform → app | App đọc gold qua Trino | `schemas/tables/gold/*.yaml` |
+| mining → app (tìm kiếm) | Dịch vụ tìm kiếm là image của mining, platform triển khai; app gọi HTTP, lùi về Trino khi dịch vụ không chạy | `schemas/api/search.v1.yaml` |
+| app ↔ platform (cảnh báo) | App ghi `app.alert_subscriptions.v1`; job streaming của platform ghép tin mới và ghi `alerts.job_match.v1`; app đọc | `schemas/kafka/alert_subscription.v1.json`, `job_match.v1.json` |
+| contracts → mọi repo | Cài theo git tag cố định: `pip install git+https://github.com/BD-WM-SA-D/joblens@v1.1.0` | SemVer |
 
 Kết quả: repo Big Data không chứa code mô hình, repo Web Mining không chứa code hạ tầng, repo SA&D không chứa code xử lý dữ liệu – khớp [ma trận sở hữu](07-quy-tac-phan-tach-mon.md#ma-trận-sở-hữu).
 
@@ -63,9 +65,9 @@ Tránh dùng git submodule (dễ lỗi khi nhiều người cùng làm) và trá
 
 Giảng viên clone một repo về là chạy được, không cần hai repo kia (phép thử "đọc độc lập" R9):
 
-- `joblens-mining`: train và đánh giá trên VietJobs + `fixtures`, không cần Kafka/K8s.
-- `joblens-app`: chạy với gold mẫu (DuckDB/Parquet sinh từ `fixtures`) thay cho Trino.
-- `joblens-platform`: nạp raw mẫu từ `fixtures` thay cho crawler thật; image mô hình có thể thay bằng stub.
+- `Web-mining-joblens`: train và đánh giá trên VietJobs + `fixtures`, không cần Kafka/K8s.
+- `PTTKHT-joblens`: chạy với gold mẫu (DuckDB/Parquet sinh từ `fixtures`) thay cho Trino.
+- `Big-Data-Storage-and-Processing-joblens`: nạp raw mẫu từ `fixtures` thay cho crawler thật; image mô hình có thể thay bằng stub.
 
 README của từng repo có mục **"Phụ thuộc"** liệt kê link hai repo kia, ghi rõ chỉ để tham khảo, không thuộc phần chấm.
 
@@ -81,9 +83,9 @@ README của từng repo có mục **"Phụ thuộc"** liệt kê link hai repo 
 Bất kỳ tài khoản GitHub nào cũng tạo được organization, miễn phí:
 
 1. Ảnh đại diện → **Settings** → **Organizations** → **New organization**.
-2. Chọn gói **Free**, đặt tên (ví dụ `joblens-vn`; nếu trùng thêm hậu tố như `joblens-hust`).
+2. Chọn gói **Free**, đặt tên. Nhóm đã tạo org **`BD-WM-SA-D`** (02/10/2026).
 3. Mời thành viên; nên có **2 owner** để không bị kẹt khi một người vắng.
-4. Tạo một **template repository** (chứa README/CONTRIBUTING mẫu, `.env.example`, cấu hình pre-commit) rồi sinh cả 4 repo từ template này.
+4. Không dùng template repository. File cấu hình chung (`.gitignore`, pre-commit, `.env.example`, `CONTRIBUTING.md`, `AGENTS.md`…) có bản gốc ở `joblens/docs/project-plan/templates/` và được chép sang 4 repo bằng `python scripts/sync_templates.py ..` (xem [repo-routing](../repo-routing.md), mục C).
 
 **Gói Free có:** không giới hạn repo private và người cộng tác; 2.000 phút GitHub Actions/tháng – đủ cho lint/test của 4 repo trong một học kỳ.
 
@@ -99,21 +101,19 @@ Bất kỳ tài khoản GitHub nào cũng tạo được organization, miễn ph
 |---|---|
 | Base permissions của org | **No permission** (không ai tự động thấy mọi repo) |
 | Team `bd`, `wm`, `sad` (theo môn đăng ký học) | Write trên repo môn tương ứng; Read trên các repo còn lại |
-| Mọi thành viên | Write trên `joblens-contracts` (mọi thay đổi vẫn qua PR) |
-| Giảng viên từng môn | *Outside collaborator*, quyền **Read** trên đúng repo của môn mình |
+| Mọi thành viên | Write trên `joblens` (mọi thay đổi vẫn qua PR) |
+| Giảng viên từng môn | *Outside collaborator*, quyền **Read** trên đúng repo của môn mình; thêm Read trên `joblens` nếu `joblens` vẫn để private (ADR 0001 D6 đề xuất để public, để giảng viên và CI cài được) |
 
 ## Không gian làm việc trên máy
 
-Thư mục `C:\Users\hoang le\joblens` (nằm ngoài OneDrive – tránh lỗi khóa file và xung đột trong `.git`) dùng làm không gian làm việc chung:
+Nên đặt ngoài OneDrive (tránh lỗi khóa file và xung đột trong `.git`). Clone 4 repo **cạnh nhau** trong cùng một thư mục – `scripts/sync_templates.py ..` cần bố cục này:
 
 ```
-C:\Users\hoang le\joblens\
-├── README.md            # mục lục bộ tài liệu này
-├── docs\                # tài liệu dự án (có thể đưa thành repo `.github` hoặc wiki của org)
-├── joblens-contracts\   # clone về sau khi tạo org
-├── joblens-platform\
-├── joblens-mining\
-└── joblens-app\
+<thư mục làm việc>\repos\
+├── joblens\                                   # dùng chung (contracts) – tài liệu kế hoạch nằm ở docs/project-plan/
+├── Big-Data-Storage-and-Processing-joblens\
+├── Web-mining-joblens\
+└── PTTKHT-joblens\
 ```
 
 Nguồn tham khảo: [Creating a new organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch) · [GitHub's plans](https://docs.github.com/get-started/learning-about-github/githubs-products).

@@ -1,0 +1,78 @@
+# Hợp đồng API dịch vụ tìm kiếm việc làm (UC001, WM4) – ADR 0001 D4a. status: draft.
+# Repo cung cấp: Web-mining-joblens (image search-service, BD triển khai trên K8s).
+# Repo gọi: PTTKHT-joblens (app; khi dịch vụ không chạy thì lùi về tìm bằng Trino/gold mẫu).
+openapi: 3.1.0
+info:
+  title: JobLens Search API
+  version: 0.1.0
+  description: Tìm kiếm tin tuyển dụng (BM25 / hybrid BM25 + embedding). Chỉ trả về job_uid và điểm; app tự lấy chi tiết tin từ silver.job_postings qua Trino.
+servers:
+  - url: "{JOBLENS_SEARCH_URL}"
+    variables:
+      JOBLENS_SEARCH_URL:
+        default: http://localhost:8090
+paths:
+  /search:
+    get:
+      operationId: search
+      summary: Tìm tin theo truy vấn và bộ lọc
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 1 }, description: Truy vấn tự do (Việt/Anh) }
+        - { name: location_codes, in: query, required: false, schema: { type: array, items: { type: string } }, style: form, explode: false, description: "Mã tỉnh (gold.dim_location), ví dụ 01,79" }
+        - { name: salary_min_vnd, in: query, required: false, schema: { type: integer, minimum: 0 } }
+        - { name: active_only, in: query, required: false, schema: { type: boolean, default: true } }
+        - { name: mode, in: query, required: false, schema: { type: string, enum: [bm25, hybrid], default: hybrid } }
+        - { name: limit, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: offset, in: query, required: false, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        "200":
+          description: Kết quả đã xếp hạng, mỗi dup_group_id chỉ một tin
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SearchResponse" }
+        "400":
+          description: Tham số sai
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+  /health:
+    get:
+      operationId: health
+      summary: Kiểm tra dịch vụ và phiên bản chỉ mục (app dùng để quyết định có lùi về Trino không)
+      responses:
+        "200":
+          description: Dịch vụ sẵn sàng
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Health" }
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      required: [query, mode, total, results, index_version]
+      properties:
+        query: { type: string }
+        mode: { type: string, enum: [bm25, hybrid] }
+        total: { type: integer, minimum: 0 }
+        index_version: { type: string, description: "Version chỉ mục, ví dụ 0.3.0-<iceberg snapshot>" }
+        results:
+          type: array
+          items:
+            type: object
+            required: [job_uid, score, rank]
+            properties:
+              job_uid: { type: string, pattern: "^[0-9a-f]{40}$" }
+              score: { type: number }
+              rank: { type: integer, minimum: 1 }
+    Health:
+      type: object
+      required: [status, index_version]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        index_version: { type: string }
+        indexed_jobs: { type: integer, minimum: 0 }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }

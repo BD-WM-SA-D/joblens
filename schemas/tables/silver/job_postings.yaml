@@ -1,0 +1,149 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: silver.job_postings
+version: 0.1.0
+status: draft
+description: Tin đã làm sạch và chuẩn hóa, một dòng một tin trên một nguồn. Chuẩn hóa trường có sẵn (lương, địa điểm, kinh nghiệm, cấp bậc) do BD làm bằng quy tắc (ADR 0001 D2). Không có cột PII.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: 'spark-jobs: silver_job_postings (MERGE INTO theo job_uid)'
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- Web-mining-joblens
+- PTTKHT-joblens
+used_by:
+- UC001
+- UC003
+- WM1
+- WM2
+- WM4
+- WM5
+write_mode: merge
+partition_spec:
+- months(first_seen_ts)
+- bucket(16, job_uid)
+primary_key:
+- job_uid
+columns:
+- name: job_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_job_id>') – joblens_contracts.job_uid() (ADR 0001 D5)
+- name: source
+  type: string
+  nullable: false
+  description: topcv | itviec | vietjobs | synthetic
+- name: source_job_id
+  type: string
+  nullable: false
+  description: ID tin trên nguồn
+- name: url
+  type: string
+  nullable: true
+  description: URL tin (VietJobs có thể không có)
+- name: title
+  type: string
+  nullable: false
+  description: Tiêu đề
+- name: company_name
+  type: string
+  nullable: true
+  description: Tên công ty như trên nguồn
+- name: company_key
+  type: string
+  nullable: true
+  description: Khóa công ty chuẩn hóa – xem gold.dim_company
+- name: salary_text
+  type: string
+  nullable: true
+  description: Chuỗi lương gốc
+- name: salary_min_vnd
+  type: long
+  nullable: true
+  description: Lương tối thiểu/tháng; null nếu thỏa thuận hoặc không ghi
+  unit: VND/tháng
+- name: salary_max_vnd
+  type: long
+  nullable: true
+  description: Lương tối đa/tháng; null nếu không có cận trên
+  unit: VND/tháng
+- name: salary_is_negotiable
+  type: boolean
+  nullable: false
+  description: true nếu ghi 'Thỏa thuận'/'Cạnh tranh'
+- name: salary_currency_original
+  type: string
+  nullable: true
+  description: VND | USD – tiền tệ trong chuỗi gốc (USD đã quy đổi ra VND)
+- name: location_codes
+  type: list<string>
+  nullable: false
+  description: Mã tỉnh/thành (gold.dim_location); rỗng nếu không xác định
+- name: experience_min_years
+  type: double
+  nullable: true
+  description: Số năm kinh nghiệm tối thiểu
+  unit: năm
+- name: experience_max_years
+  type: double
+  nullable: true
+  description: Số năm kinh nghiệm tối đa
+  unit: năm
+- name: level_code
+  type: string
+  nullable: true
+  description: 'Cấp bậc chuẩn: intern | junior | mid | senior | lead | manager | other'
+- name: employment_type_code
+  type: string
+  nullable: true
+  description: full_time | part_time | contract | internship | other
+- name: category_source
+  type: string
+  nullable: true
+  description: Nhóm nghề theo nguồn (chưa ánh xạ)
+- name: deadline
+  type: date
+  nullable: true
+  description: Hạn nộp
+- name: skill_tags
+  type: list<string>
+  nullable: false
+  description: Tag kỹ năng do nhà tuyển dụng gắn (nguyên trạng)
+- name: description
+  type: string
+  nullable: true
+  description: Mô tả công việc
+- name: requirements
+  type: string
+  nullable: true
+  description: Yêu cầu
+- name: benefits
+  type: string
+  nullable: true
+  description: Quyền lợi
+- name: first_seen_ts
+  type: timestamp
+  nullable: false
+  description: Lần đầu crawl thấy tin (thay cho ngày đăng)
+- name: last_seen_ts
+  type: timestamp
+  nullable: false
+  description: Lần gần nhất thấy tin
+- name: is_active
+  type: boolean
+  nullable: false
+  description: Tin còn trên nguồn ở lần crawl gần nhất
+- name: content_hash
+  type: string
+  nullable: false
+  description: Hash payload lần gần nhất
+- name: raw_html_uri
+  type: string
+  nullable: true
+  description: HTML thô gần nhất trên S3
+- name: updated_ts
+  type: timestamp
+  nullable: false
+  description: Lần MERGE gần nhất
+notes:
+- docs/03 ghi partition months(posted_date); TopCV không hiện rõ ngày đăng nên dùng first_seen_ts (docs/13).
+- 'Dedup không tính ở đây: gom tin trùng bằng silver.job_dedup (ADR 0001 D5).'

@@ -1,0 +1,58 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: silver.review_aspects
+version: 0.1.0
+status: draft
+description: Kết quả ABSA trên review công ty (WM3), mức câu.
+writer_repo: Web-mining-joblens
+writer_component: image absa-scorer (KubernetesPodOperator)
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- PTTKHT-joblens
+used_by:
+- UC005
+- WM3
+write_mode: append
+partition_spec:
+- months(review_date)
+primary_key:
+- review_uid
+- sentence_index
+- aspect
+columns:
+- name: review_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_review_id>')
+- name: company_key
+  type: string
+  nullable: false
+  description: Khóa công ty chuẩn hóa – gold.dim_company
+- name: review_date
+  type: date
+  nullable: false
+  description: Ngày đầu tháng của review_month
+- name: sentence_index
+  type: int
+  nullable: false
+  description: Thứ tự câu trong review (0 = liked_text câu đầu…)
+- name: aspect
+  type: string
+  nullable: false
+  description: salary_benefits | training_learning | management_care | culture_fun | office_workspace | work_life_balance
+- name: polarity
+  type: string
+  nullable: false
+  description: positive | negative | neutral
+- name: confidence
+  type: double
+  nullable: false
+  description: Độ tin cậy 0–1
+- name: model_version
+  type: string
+  nullable: false
+  description: Version image
+- name: run_id
+  type: string
+  nullable: false
+  description: ID lần chạy Airflow đã ghi dòng này

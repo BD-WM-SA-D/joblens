@@ -11,7 +11,7 @@ Phân công theo **môn chủ** để khớp quy tắc R7 ([Quy tắc phân tác
 | **TV1 – Data acquisition & IE** | Spider TopCV/ITviec, parser, dedup (WM1), bộ gán nhãn + mô hình trích xuất kỹ năng (WM2) | WM | Viết producer Kafka cùng TV3 |
 | **TV2 – Opinion & Retrieval** | ABSA review công ty (WM3), tìm kiếm hoặc gợi ý (WM4/WM5), đồ thị kỹ năng (WM6) | WM | Event-generator |
 | **TV3 – Platform & Streaming** | k3d, Strimzi/Kafka, SeaweedFS, Lakekeeper, Trino, monitoring; đường streaming bronze; thí nghiệm batch vs streaming | BD | Deployment diagram cho TV5 |
-| **TV4 – Processing & Quality** | Spark jobs silver, dbt gold, GX suites, Airflow DAG, compaction; đo hiệu năng | BD | Tích hợp mô hình WM thành Spark job |
+| **TV4 – Processing & Quality** | Spark jobs silver, dbt gold, GX suites, Airflow DAG, compaction; đo hiệu năng | BD | Đưa image mô hình WM vào DAG Airflow (ADR 0001 D3) |
 | **TV5 – Analyst/Architect & PM** | Mô hình nghiệp vụ, UC, NFR, UML, ADR phía ứng dụng; cổng JobLens (API + UI); kiểm thử chấp nhận; điều phối nhóm | SA&D | Glossary, ma trận truy vết |
 
 **Nếu nhóm 4 người:** gộp TV1 + TV2 thành một người phụ trách WM1–WM3 và bỏ WM4–WM6 (chỉ giữ 3 bài lõi); hoặc TV3 kiêm luôn Airflow/GX nếu TV4 cần hỗ trợ phần WM. Luôn giữ **một người chuyên trách SA&D**, vì 7 chương cùng toàn bộ UML là khối lượng lớn nhất về tài liệu.
