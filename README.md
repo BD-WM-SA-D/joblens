@@ -60,6 +60,7 @@ adr-index.md            danh mục ADR của cả 3 repo
 ## Tài liệu
 
 - Mục lục kế hoạch dự án: [`docs/project-plan/README.md`](docs/project-plan/README.md)
+- **File nào lên repo nào, quy trình khi tạo/sửa file:** [`docs/repo-routing.md`](docs/repo-routing.md)
 - Thuật ngữ: [`glossary.md`](glossary.md) · Phiên bản: [`versions.md`](versions.md) · ADR: [`adr-index.md`](adr-index.md)
 
 ## Repo trong org
