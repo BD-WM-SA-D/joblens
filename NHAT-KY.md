@@ -4,6 +4,15 @@ Quy ước ghi: [repo-routing – Nhật ký thay đổi](docs/repo-routing.md#n
 
 ## 2026-10-02 · Hoang Le · chưa có PR
 
+- **Tạo:** `docs/adr/0001-ranh-gioi-xu-ly-giua-cac-repo.md` (A)
+- **Sửa:** `adr-index.md` (A)
+- **Xóa:** –
+- **Lý do:** chốt các điểm dễ dẫm chân giữa repo: ai parse, ai chuẩn hóa lương/địa điểm, mô hình giao dưới dạng image, phục vụ tìm kiếm và cảnh báo, khóa `job_uid`/`dup_group_id`, quyền đọc `joblens`, biến môi trường đăng nhập
+- **Ảnh hưởng repo khác:** cả 3 repo môn sau khi ADR được duyệt (bảng "Tổng hợp" trong ADR); cần 3 người phụ trách đồng ý D1, D3, D4, D5
+- **AI:** Claude Code (Claude Opus 5.5) – soạn nháp ADR và phương án đề xuất; <người kiểm tra> đã kiểm tra
+
+## 2026-10-02 · Hoang Le · chưa có PR
+
 - **Tạo:** `docs/project-plan/templates/AGENTS.md`, `templates/agents/{joblens,big-data,web-mining,pttkht}.md`, `templates/CLAUDE.md`, `templates/cursor-rule.mdc` (A – bản gốc); `scripts/sync_templates.py` (A); `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/joblens.mdc` (C)
 - **Sửa:** `docs/repo-routing.md` (A – thêm file agent vào mục C, lệnh đồng bộ); `scripts/validate_fixtures.py` (A – in UTF-8 trên Windows); `README.md` (D)
 - **Xóa:** –
