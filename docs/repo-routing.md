@@ -30,7 +30,7 @@ Bảng tra cụ thể cho từng loại file. Nền tảng: [ma trận sở hữ
 |---|---|
 | Mục **B** hoặc **D** (chỉ thuộc repo này) | Sửa bình thường qua PR |
 | Mục **A** (schema, fixtures, glossary…) | PR vào **CHUNG** trước, báo nhóm và chờ 24 giờ; bản *major* chờ người phụ trách repo bị ảnh hưởng xác nhận. Repo môn chỉ cập nhật version sau khi CHUNG đã gắn tag |
-| Mục **C** (file cấu hình chung) | **Không sửa trực tiếp ở repo môn.** Sửa bản gốc ở `joblens/docs/project-plan/templates/`, merge, rồi chép sang cả 4 repo trong cùng ngày bằng các PR gắn nhãn `cross-repo` |
+| Mục **C** (file cấu hình chung) | **Không sửa trực tiếp ở repo môn.** Sửa bản gốc ở `joblens/docs/project-plan/templates/`, merge, rồi chạy `python scripts/sync_templates.py ..` (trong repo `joblens`, với 4 repo clone cạnh nhau) và mở PR `cross-repo` ở từng repo trong cùng ngày. `--check` chỉ báo file lệch |
 | Mục **E** (một việc nhiều repo) | Kiểm tra phần tương ứng ở repo kia có cần đổi theo không; nếu có thì mở issue `cross-repo` và dẫn link chéo |
 
 **Đánh dấu ngay trong file.** Những file có bản gốc ở nơi khác phải ghi một dòng đầu file. Người hay agent mở file ra thấy dòng này là biết không được sửa tại chỗ:
@@ -38,7 +38,7 @@ Bảng tra cụ thể cho từng loại file. Nền tảng: [ma trận sở hữ
 | File | Dòng đánh dấu (comment theo cú pháp của file) |
 |---|---|
 | Mục C (`.gitignore`, `.pre-commit-config.yaml`, `.env.example`, `.gitattributes`) | `# ĐỒNG BỘ TỪ joblens/docs/project-plan/templates/<tên> – sửa ở đó trước, không sửa tại đây` |
-| `CONTRIBUTING.md`, `AGENTS.md` | `<!-- ĐỒNG BỘ TỪ joblens/docs/project-plan/templates/<tên> – sửa ở đó trước, không sửa tại đây -->` |
+| `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/joblens.mdc` | `<!-- ĐỒNG BỘ TỪ joblens/docs/project-plan/templates/<tên> – sửa ở đó trước, không sửa tại đây -->` |
 | Mục E (phần việc của repo này trong một việc nhiều repo) | `# LIÊN QUAN: <repo>/<đường dẫn> – đổi file này thì kiểm tra file kia` |
 | File trong repo môn sinh ra từ hợp đồng (ví dụ model Pydantic sinh từ schema) | `# SINH TỪ joblens schemas/kafka/<tên>.json @ v<x.y.z> – không sửa tay` |
 
@@ -50,7 +50,10 @@ Bản gốc của các file mục C ở `joblens/docs/project-plan/templates/`:
 | `.pre-commit-config.yaml` | `pre-commit-config.yaml` |
 | `.env.example` | `env.example` |
 | `.gitattributes` | `gitattributes.template` |
-| `CONTRIBUTING.md` | `CONTRIBUTING.md` (bản chép chỉ khác đường dẫn tới quy tắc 9) |
+| `CONTRIBUTING.md` | `CONTRIBUTING.md` (bản chép chỉ khác đường dẫn tới quy tắc 9 và repo-routing) |
+| `AGENTS.md` | `AGENTS.md` + `agents/{joblens,big-data,web-mining,pttkht}.md` |
+| `CLAUDE.md` | `CLAUDE.md` |
+| `.cursor/rules/joblens.mdc` | `cursor-rule.mdc` |
 
 ## Nhật ký thay đổi
 
@@ -101,7 +104,7 @@ Sửa nhỏ trong file mục B/D chỉ cần một dòng tóm tắt. Mục mới
 | Thuật ngữ, phiên bản, danh mục ADR | `glossary.md`, `versions.md`, `adr-index.md` |
 | Tài liệu kế hoạch dự án, mẫu cấu hình gốc | `docs/project-plan/**`, `docs/project-plan/templates/**` |
 | Script khám phá dữ liệu chung (EDA trước khi làm) | `explore/01_vietjobs_eda.py` |
-| Package và script kiểm tra hợp đồng | `joblens_contracts/`, `scripts/validate_fixtures.py` |
+| Package, script kiểm tra hợp đồng và đồng bộ file mục C | `joblens_contracts/`, `scripts/validate_fixtures.py`, `scripts/sync_templates.py` |
 | Tài liệu điều phối chung | `docs/repo-routing.md` (file này) |
 
 ## B. Chỉ ở một repo môn
@@ -160,7 +163,9 @@ Bản gốc ở `joblens/docs/project-plan/templates/`. Muốn đổi thì sửa
 | `CONTRIBUTING.md` | từ `templates/CONTRIBUTING.md` (chỉ khác đường dẫn tới quy tắc 9) |
 | `.env.example` | cùng bộ biến `JOBLENS_*` |
 | `.gitattributes` | `* text=auto eol=lf` |
-| `AGENTS.md` (+ `CLAUDE.md`, `.cursor/rules/`) | quy tắc cho AI agent – phần chung giống nhau, cuối file có mục "Phạm vi repo này" riêng |
+| `AGENTS.md` | Quy tắc cho AI agent (Codex đọc trực tiếp). Phần chung giống nhau, cuối file có mục "Phạm vi repo này" lấy từ `templates/agents/<repo>.md` |
+| `CLAUDE.md` | Claude Code – chỉ nhúng `@AGENTS.md` |
+| `.cursor/rules/joblens.mdc` | Cursor – `alwaysApply`, trỏ tới `@AGENTS.md` kèm tóm tắt |
 
 ## D. Có ở cả 4 repo, nội dung riêng từng repo
 

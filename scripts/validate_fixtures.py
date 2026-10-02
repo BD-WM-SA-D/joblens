@@ -33,6 +33,7 @@ def validate_all() -> list[str]:
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")  # console Windows mặc định cp1252
     problems = validate_all()
     for p in problems:
         print(p)

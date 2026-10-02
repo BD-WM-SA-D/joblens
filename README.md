@@ -40,10 +40,12 @@ schemas/kafka/          JSON Schema cho từng topic (job_posting.v1 cho jobs.ra
 schemas/tables/         data contract YAML cho bronze/ silver/ gold/ (chưa có)
 fixtures/               dữ liệu mẫu rất nhỏ, có ghi nguồn và giấy phép
 joblens_contracts/      package Python nhỏ trả đường dẫn tới schema/fixtures
-scripts/                validate_fixtures.py, dùng trong CI
+scripts/                validate_fixtures.py (CI), sync_templates.py (đồng bộ file cấu hình chung sang 4 repo)
 tests/                  pytest
 docs/project-plan/      bộ tài liệu kế hoạch dự án (01–13, mẫu repo)
 explore/                script khám phá dữ liệu (VietJobs EDA)
+AGENTS.md, CLAUDE.md    quy tắc cho AI agent (Codex, Claude Code, Cursor)
+NHAT-KY.md              nhật ký thay đổi
 glossary.md             thuật ngữ chung (bản duy nhất)
 versions.md             pin phiên bản Spark/Iceberg/Kafka/Trino/…
 adr-index.md            danh mục ADR của cả 3 repo

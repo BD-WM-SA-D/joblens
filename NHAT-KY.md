@@ -2,6 +2,15 @@
 
 Quy ước ghi: [repo-routing – Nhật ký thay đổi](docs/repo-routing.md#nhật-ký-thay-đổi). Mỗi PR một mục, mục mới nhất đặt trên cùng. Liệt kê mọi file tạo/xóa và mọi file mục A/C/E bị sửa.
 
+## 2026-10-02 · Hoang Le · chưa có PR
+
+- **Tạo:** `docs/project-plan/templates/AGENTS.md`, `templates/agents/{joblens,big-data,web-mining,pttkht}.md`, `templates/CLAUDE.md`, `templates/cursor-rule.mdc` (A – bản gốc); `scripts/sync_templates.py` (A); `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/joblens.mdc` (C)
+- **Sửa:** `docs/repo-routing.md` (A – thêm file agent vào mục C, lệnh đồng bộ); `scripts/validate_fixtures.py` (A – in UTF-8 trên Windows); `README.md` (D)
+- **Xóa:** –
+- **Lý do:** quy tắc làm việc cho AI agent dùng chung cho Codex, Claude Code, Cursor; script đồng bộ file mục C sang 4 repo (`--check` để phát hiện lệch)
+- **Ảnh hưởng repo khác:** cả 3 repo môn nhận `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/joblens.mdc` với mục "Phạm vi repo này" riêng
+- **AI:** Claude Code (Claude Opus 5.5) – soạn quy tắc và script đồng bộ; <người kiểm tra> đã kiểm tra
+
 ## 2026-10-02 · Hoang Le · không qua PR (giai đoạn khởi tạo)
 
 - **Tạo:** `docs/repo-routing.md` (A), `NHAT-KY.md` (D), `docs/project-plan/templates/env.example`, `docs/project-plan/templates/gitattributes.template` (A – bản gốc cho file mục C)
