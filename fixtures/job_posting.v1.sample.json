@@ -1,0 +1,68 @@
+[
+  {
+    "schema_version": "job_posting.v1",
+    "source": "synthetic",
+    "source_job_id": "syn-000001",
+    "url": "https://example.invalid/viec-lam/lap-trinh-vien-python/syn-000001.html",
+    "crawl_ts": "2026-10-01T02:00:00Z",
+    "lastmod": "2026-09-30T10:15:00Z",
+    "content_hash": "0000000000000000000000000000000000000000000000000000000000000001",
+    "payload": {
+      "title": "Lập trình viên Python (Data Engineer)",
+      "company_name": "Công ty Mẫu A",
+      "company_id": "syn-co-01",
+      "salary_text": "15 - 25 triệu",
+      "locations": ["Hà Nội"],
+      "experience_text": "1 năm",
+      "level": "Nhân viên",
+      "employment_type": "Toàn thời gian",
+      "category": "IT phần mềm",
+      "deadline": "2026-10-31",
+      "skill_tags": ["Python", "SQL", "Apache Spark"],
+      "description": "Xây dựng pipeline dữ liệu, viết job Spark xử lý dữ liệu tuyển dụng.",
+      "requirements": "Thành thạo Python và SQL; biết Kafka là lợi thế.",
+      "benefits": "Lương tháng 13, bảo hiểm đầy đủ."
+    }
+  },
+  {
+    "schema_version": "job_posting.v1",
+    "source": "synthetic",
+    "source_job_id": "syn-000002",
+    "url": "https://example.invalid/viec-lam/nhan-vien-kinh-doanh/syn-000002.html",
+    "crawl_ts": "2026-10-01T02:00:05Z",
+    "lastmod": null,
+    "content_hash": "0000000000000000000000000000000000000000000000000000000000000002",
+    "payload": {
+      "title": "Nhân viên kinh doanh",
+      "company_name": "Công ty Mẫu B",
+      "company_id": null,
+      "salary_text": "Thỏa thuận",
+      "locations": ["Hồ Chí Minh", "Đồng Nai"],
+      "experience_text": "Không yêu cầu kinh nghiệm",
+      "level": "Nhân viên",
+      "employment_type": "Toàn thời gian",
+      "category": "Kinh doanh / Bán hàng",
+      "deadline": null,
+      "skill_tags": [],
+      "description": "Tìm kiếm và chăm sóc khách hàng doanh nghiệp.",
+      "requirements": "Giao tiếp tốt.",
+      "benefits": null
+    }
+  },
+  {
+    "schema_version": "job_posting.v1",
+    "source": "synthetic",
+    "source_job_id": "syn-000003",
+    "url": "https://example.invalid/viec-lam/ky-su-xu-li-nuoc-thai/syn-000003.html",
+    "crawl_ts": "2026-10-01T02:00:10Z",
+    "content_hash": "0000000000000000000000000000000000000000000000000000000000000003",
+    "payload": {
+      "title": "Kỹ sư Xử Lí Nước Thải",
+      "company_name": "Công ty Mẫu C",
+      "salary_text": "Từ 12 triệu",
+      "locations": ["TP HCM (cũ)"],
+      "skill_tags": ["AutoCAD"],
+      "description": "Vận hành hệ thống xử lý nước thải. (Bản ghi gần trùng có chủ đích để thử dedup WM1.)"
+    }
+  }
+]
