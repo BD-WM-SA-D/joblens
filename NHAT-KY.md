@@ -1,6 +1,12 @@
 # Nhật ký thay đổi – joblens (dùng chung)
 
-Quy ước ghi: [repo-routing – Nhật ký thay đổi](docs/repo-routing.md#nhật-ký-thay-đổi). Mỗi PR một mục, mục mới nhất đặt trên cùng. Liệt kê mọi file tạo/xóa và mọi file mục A/C/E bị sửa.
+Chỉ ghi sự kiện đáng nhớ: đổi hợp đồng hoặc file cấu hình chung, ghép hệ thống, chốt số liệu, quyết định quan trọng. Việc thường ngày đã có lịch sử git. Mục mới đặt trên cùng, vài dòng là đủ – xem [repo-routing](docs/repo-routing.md), mục Nhật ký.
+
+## 2026-10-03 · Hoang Le
+
+- Đơn giản hóa quy trình: trong repo môn làm tự do (push thẳng `main` được, không bắt buộc PR, không ghi nhật ký việc thường ngày); chỉ chỗ nối (hợp đồng ở `joblens`, file cấu hình chung) mới cần nhắn nhóm + ghi một dòng nhật ký; đổi tên/xóa trường thì hỏi người đang dùng; ghép hệ thống theo mốc thay vì hằng tuần; bỏ chờ 24 giờ.
+- Sửa: `docs/project-plan/09` (quy tắc 1, 3, 5, 6, 10, checklist), `docs/repo-routing.md` (thêm bảng Tra nhanh), `templates/CONTRIBUTING.md`, `templates/AGENTS.md`, `templates/agents/joblens.md`, `templates/cursor-rule.mdc`, ADR 0001 (cách duyệt), `README.md`; đồng bộ `CONTRIBUTING.md`, `AGENTS.md`, `.cursor/rules/joblens.mdc` sang 4 repo; sửa phần đầu `NHAT-KY.md` ở 4 repo.
+- AI: Claude Code (Claude Opus 5.5) – soạn quy trình mới theo yêu cầu; <người kiểm tra> đã kiểm tra
 
 ## 2026-10-02 · Hoang Le · chưa có PR
 

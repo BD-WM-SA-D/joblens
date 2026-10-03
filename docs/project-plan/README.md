@@ -26,7 +26,7 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 | 06 | [Ma trận liên kết](06-ma-tran-lien-ket.md) | Ca sử dụng ↔ bảng gold ↔ bài khai phá ↔ bài giảng ↔ metric |
 | 07 | [Quy tắc phân tách giữa các môn](07-quy-tac-phan-tach-mon.md) | Ma trận sở hữu, quy tắc R1–R13, khung báo cáo cho từng môn |
 | 08 | [Tổ chức repo và GitHub](08-to-chuc-repo-va-github.md) | 4 repo, cách nối qua hợp đồng dữ liệu, tạo org, phân quyền |
-| 09 | [Quy tắc làm việc chung giữa các repo](09-quy-tac-lam-viec-chung.md) | 10 quy tắc kỹ thuật (gồm những gì không được đưa lên GitHub), mục chú ý về thứ thay đổi nằm ngoài git, checklist PR |
+| 09 | [Quy tắc làm việc chung giữa các repo](09-quy-tac-lam-viec-chung.md) | 10 quy tắc kỹ thuật (gồm những gì không được đưa lên GitHub), làm song song trong repo môn và chỉ cẩn thận ở chỗ nối, mục chú ý về thứ thay đổi nằm ngoài git, checklist trước khi push |
 | 10 | [Phân công và lộ trình](10-phan-cong-va-lo-trinh.md) | Vai trò 4–5 người, lịch 12 tuần |
 | 11 | [Rủi ro và câu hỏi cho giảng viên](11-rui-ro-va-cau-hoi.md) | Rủi ro + dự phòng, câu hỏi cần xác nhận |
 | 12 | [Tài liệu tham khảo](12-tai-lieu-tham-khao.md) | Bài giảng, bài báo, tài liệu công nghệ, dataset, pháp lý |

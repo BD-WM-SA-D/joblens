@@ -6,9 +6,11 @@
 
 ## 1. Sửa hợp đồng trước, sửa code sau
 
-- Mọi thay đổi schema message Kafka hoặc schema bảng đều mở PR ở `joblens` **trước**, báo trước cho nhóm theo ngoại lệ ở quy tắc 3, sau đó mới sửa code ở repo khác.
-- Đánh version theo SemVer: thêm trường không bắt buộc → tăng *minor*; đổi tên hoặc xóa trường → tăng *major*.
-- Khi đổi *major*, tạo topic/bảng mới (ví dụ `jobs.raw.topcv.v2`) và giữ bản cũ chạy song song cho đến khi mọi repo đã chuyển xong.
+- Hợp đồng (schema message Kafka, contract bảng, API) chỉ có **một bản** ở repo `joblens`. Cần đổi thì sửa ở đó **trước**, rồi mới sửa code ở repo môn.
+- **Giai đoạn `draft`** (tới buổi ghép hệ thống đầu tiên): sửa thoải mái. Chỉ cần nhắn nhóm chat một câu và ghi một dòng vào `joblens/NHAT-KY.md`.
+- **Sau khi ổn định (`stable`):**
+  - Thêm trường hoặc cột không bắt buộc: cứ làm và báo nhóm (tăng *minor*).
+  - Đổi tên hoặc xóa: hỏi người đang dùng trong chat, họ "ok" thì đổi (tăng *major*). Nếu bên kia chưa kịp chuyển thì tạo topic hay bảng `.vN` mới và chạy song song với bản cũ.
 - CI của `joblens` kiểm tra `fixtures` luôn khớp schema.
 
 ## 2. Mỗi bảng chỉ một repo được ghi
@@ -25,14 +27,17 @@
 
 Danh sách đầy đủ kèm schema/contract: `schemas/README.md` trong repo `joblens`. Cần dữ liệu thì đọc hoặc mở issue nhờ repo chủ, không tự ghi bảng của repo khác. Quy tắc này khớp với nguyên tắc mỗi phần có đúng một môn chấm chính.
 
-## 3. Tự review, `main` luôn chạy được
+## 3. Làm song song, ghép khi cần
 
-- **Mặc định là tự review.** Mọi thay đổi vẫn vào `main` qua PR (để có lịch sử và để CI chạy), nhưng người mở PR tự đọc lại toàn bộ diff theo [checklist](#checklist-mở-pr) rồi tự merge khi CI pass – không chờ người khác duyệt.
-- **Ngoại lệ – thay đổi có thể làm hỏng repo khác** (sửa `joblens`, đổi tên cột/bảng, đổi topic): không cần review đầy đủ, chỉ cần **báo trước** trong nhóm chat kèm link PR. Sau **24 giờ** không ai phản đối thì tự merge. Riêng thay đổi phá vỡ tương thích (tăng *major*) thì chờ người phụ trách repo bị ảnh hưởng trả lời "ok" – một dòng là đủ.
-- **Để máy kiểm tra thay người:** CI chạy lint + test + kiểm tra `fixtures` khớp schema; pre-commit chạy `ruff` và gitleaks trước mỗi commit. Buổi ghép hệ thống hằng tuần (quy tắc 5) là lần kiểm tra chéo duy nhất, tập trung vào chỗ nối giữa các repo.
-- Nhánh ngắn hạn `feat/…`, `fix/…`, `docs/…`; merge kiểu squash.
-- Commit theo Conventional Commits, ví dụ `feat(crawler): thêm adapter ITviec`, `fix(dbt): sửa đơn vị lương USD`.
-- Gói Free không ép được quy tắc này trên repo private → đây là quy ước cả nhóm tự giữ.
+- **Trong repo môn của mình: làm tự do.**
+  - Push thẳng `main` hay dùng nhánh đều được; không bắt buộc PR, không cần ai duyệt.
+  - Mỗi repo do nhóm của môn đó tự quản.
+- **Ở repo `joblens` và mọi thay đổi chạm repo khác:**
+  - Nên qua PR để CI chạy.
+  - Không cần chờ duyệt, nhưng phải **nhắn nhóm chat** (quy tắc 1).
+- **Commit message** ghi rõ thay đổi gì, nên theo kiểu Conventional Commits: `feat(crawler): thêm adapter ITviec`, `fix(dbt): sửa đơn vị lương USD`.
+- **Để máy kiểm tra thay người:** pre-commit chặn bí mật và dữ liệu trước mỗi commit; CI của `joblens` kiểm tra hợp đồng.
+- **Không force-push** lên `main` của bất kỳ repo nào.
 
 ## 4. Không dùng `latest`, luôn ghi rõ phiên bản
 
@@ -45,17 +50,16 @@ Danh sách đầy đủ kèm schema/contract: `schemas/README.md` trong repo `jo
 
 - Mọi buổi demo và mọi lần chốt số liệu đều phải dựng lại được từ một dòng của bảng này.
 
-## 5. Ghép hệ thống mỗi tuần
+## 5. Ghép hệ thống theo mốc
 
-- Mỗi tuần một buổi chạy thử toàn luồng: crawler → Kafka → bronze → silver → gold → app.
-- `Big-Data-Storage-and-Processing-joblens` có một script kiểm tra nhanh (smoke test) cho việc này.
+- Ghép toàn luồng (crawler → Kafka → bronze → silver → gold → app) **ở cuối mỗi giai đoạn** của lộ trình (P1, P2, P3) và trước mỗi buổi demo. Hai nhóm cần thử chỗ nối thì có thể ghép riêng bất cứ lúc nào.
+- Mỗi lần ghép, ghi một dòng vào `deploy/compat.md` (repo Big Data) và một mục vào `joblens/NHAT-KY.md`.
 - Lỗi ở chỗ nối giữa các repo được ưu tiên sửa **trước** việc mới.
 
-## 6. Một bảng công việc chung cho cả org
+## 6. Theo dõi công việc
 
-- GitHub Projects cấp org, gom issue của cả 4 repo.
-- Issue liên quan repo khác dẫn link dạng `BD-WM-SA-D/Big-Data-Storage-and-Processing-joblens#12`, gắn nhãn `cross-repo`; đang chờ repo khác thì gắn `blocked`.
-- Mỗi issue có đúng một người phụ trách; issue lớn tách nhỏ đến mức làm xong trong ≤ 3 ngày.
+- Việc trong một repo: nhóm tự quản theo cách tiện nhất (issue, checklist, chat…).
+- Việc **cần repo khác làm** thì mở issue ở repo đó, gắn nhãn `cross-repo`, để không bị quên. GitHub Projects cấp org là tùy chọn.
 
 ## 7. Cấu hình thống nhất, không commit bí mật
 
@@ -112,11 +116,18 @@ Danh sách đầy đủ kèm schema/contract: `schemas/README.md` trong repo `jo
 
 ## 10. Ghi lại quyết định, giữ nhịp trao đổi
 
-- Quyết định kỹ thuật ghi thành ADR ở repo chủ (ví dụ `Big-Data-Storage-and-Processing-joblens/docs/adr/0003-lakekeeper-catalog.md`), liệt kê trong `joblens/adr-index.md`.
+- Quyết định ảnh hưởng nhiều repo ghi thành ADR ở `joblens/docs/adr/`. Quyết định chỉ trong một repo thì ghi ADR ở repo đó nếu cần cho báo cáo. Tất cả liệt kê trong `joblens/adr-index.md`.
 - Glossary chỉ có một bản duy nhất ở `joblens`.
-- Với thay đổi thuộc ngoại lệ ở quy tắc 3: ai phản đối thì lên tiếng trong **24 giờ**; im lặng được coi là đồng ý.
-- Họp 30 phút mỗi tuần, ngay sau buổi ghép hệ thống: việc xong, việc bị chặn, thay đổi hợp đồng sắp tới.
-- Nếu dùng AI để sinh code hoặc tài liệu, ghi chú trong mô tả PR (công cụ, phần nào, ai đã kiểm tra) – vừa minh bạch, vừa là tư liệu cho phần Human-AI collaboration của môn Phân tích thiết kế hệ thống.
+- **Nhật ký `NHAT-KY.md`** chỉ ghi khi:
+  - Đổi hợp đồng hoặc file cấu hình chung.
+  - Ghép hệ thống, chốt số liệu.
+  - Có quyết định đáng nhớ.
+
+  Việc thường ngày không cần ghi.
+- **Dùng AI:**
+  - Ghi một dòng `AI: <công cụ> – <phần nào>` cuối commit message.
+  - Riêng repo PTTKHT ghi thêm vào `docs/ai-log.md`, vì Human-AI collaboration là phần được chấm của môn Phân tích thiết kế hệ thống.
+- Họp ngắn khi cần (gợi ý mỗi tuần 15–30 phút): việc xong, việc bị chặn, hợp đồng sắp đổi.
 
 ## Chú ý: thứ thay đổi nhưng không đưa lên GitHub
 
@@ -163,16 +174,9 @@ Cách kiểm tra: **xóa cluster và clone lại repo trên một máy khác** �
 
 File khóa phiên bản (`uv.lock`/`requirements*.txt`, `package-lock.json`), schema và fixtures, model dbt và test, DAG Airflow, Helm chart/manifest, nguồn UML (`.puml`, `.drawio`), ADR, `compat.md`, `models.yaml`. Thiếu một trong số này là người khác không dựng lại được hệ thống.
 
-## Checklist mở PR
+## Trước khi push
 
-Dùng để tự review trước khi merge.
-
-- [ ] Đã tự đọc lại toàn bộ diff trên GitHub (không chỉ trong editor).
-- [ ] Không lẫn cấu hình riêng của máy mình (cổng, đường dẫn, RAM…) – những thứ đó để trong file `*.local.*`.
-- [ ] Nếu đã sửa gì trực tiếp trên cluster/giao diện web: đã đưa ngược vào manifest, values hoặc file export.
-- [ ] PR nhỏ, một mục đích; tiêu đề theo Conventional Commits.
-- [ ] Nếu đụng schema: đã có PR ở `joblens` và đã tăng version.
-- [ ] Test/lint pass; không có dữ liệu hay bí mật trong diff.
-- [ ] Đã cập nhật tài liệu/ADR nếu thay đổi hành vi hoặc kiến trúc.
-- [ ] Đã ghi chú nếu có dùng AI.
-- [ ] Nếu ảnh hưởng repo khác: gắn nhãn `cross-repo`, đã báo nhóm và đã qua 24 giờ không ai phản đối (major thì đã có người phụ trách xác nhận).
+- [ ] Không lẫn dữ liệu, bí mật hay cấu hình riêng của máy mình (pre-commit chặn phần lớn).
+- [ ] Nếu đã sửa trực tiếp trên cluster hay giao diện web: đã đưa ngược vào manifest, values hoặc file export.
+- [ ] Nếu đụng hợp đồng: đã sửa ở `joblens`, đã nhắn nhóm, đã ghi một dòng `joblens/NHAT-KY.md` (đổi tên hoặc xóa thì đã có người dùng trả lời "ok").
+- [ ] Nếu dùng AI đáng kể: đã ghi dòng `AI:` trong commit message.

@@ -70,6 +70,8 @@ def render(repo: str) -> dict[str, str]:
             routing = "docs/repo-routing.md" if shared else f"{BLOB}/docs/repo-routing.md"
             body = body.replace("](../09-quy-tac-lam-viec-chung.md", f"]({plan}/09-quy-tac-lam-viec-chung.md")
             body = body.replace("](../../repo-routing.md", f"]({routing}")
+            schemas = "schemas/README.md" if shared else f"{BLOB}/schemas/README.md"
+            body = body.replace("](../../../schemas/README.md", f"]({schemas}")
         out[dst] = marker(src, style) + body
     scope = f"agents/{SCOPES[repo]}.md"
     out["AGENTS.md"] = (

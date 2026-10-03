@@ -12,37 +12,67 @@ Bảng tra cụ thể cho từng loại file. Nền tảng: [ma trận sở hữ
 | **SAD** | `BD-WM-SA-D/PTTKHT-joblens` | IT3120 Phân tích thiết kế hệ thống |
 | **KHÔNG** | Không repo nào – để ở `s3://joblens/…`, `.env` hoặc trình quản lý mật khẩu | – |
 
-## Quy trình mỗi khi tạo hoặc sửa file
+## Tra nhanh
 
-Áp dụng cho mọi người và mọi AI agent (Codex, Claude, Cursor…).
-
-**Khi tạo file mới:**
-
-1. Tra loại file trong các mục A–F bên dưới để biết file thuộc repo nào. Nếu repo đích không phải repo đang mở thì **không tạo ở đây**: chuyển sang đúng repo, hoặc mở issue ở repo đó và gắn nhãn `cross-repo`.
-2. Nếu file thuộc mục **F** thì không commit. Thêm đường dẫn vào `.gitignore` nếu chưa được chặn.
-3. Nếu việc cần file ở nhiều repo (mục **E**) thì tách thành nhiều file, mỗi repo giữ đúng phần của mình. Làm phần ở **CHUNG** trước (schema, contract), các repo môn làm sau.
-4. Đặt file đúng thư mục theo bảng. Nếu file thuộc mục C hoặc E, hoặc được sinh ra từ hợp đồng, thì thêm dòng đánh dấu ở đầu file (xem bảng "Đánh dấu ngay trong file" bên dưới).
-5. Ghi vào nhật ký (xem mục [Nhật ký thay đổi](#nhật-ký-thay-đổi)).
-
-**Khi sửa file có sẵn:**
-
-| File đang sửa | Phải làm |
+| Bạn đang làm | Lên repo |
 |---|---|
-| Mục **B** hoặc **D** (chỉ thuộc repo này) | Sửa bình thường qua PR |
-| Mục **A** (schema, fixtures, glossary…) | PR vào **CHUNG** trước, báo nhóm và chờ 24 giờ; bản *major* chờ người phụ trách repo bị ảnh hưởng xác nhận. Repo môn chỉ cập nhật version sau khi CHUNG đã gắn tag |
-| Mục **C** (file cấu hình chung) | **Không sửa trực tiếp ở repo môn.** Sửa bản gốc ở `joblens/docs/project-plan/templates/`, merge, rồi chạy `python scripts/sync_templates.py ..` (trong repo `joblens`, với 4 repo clone cạnh nhau) và mở PR `cross-repo` ở từng repo trong cùng ngày. `--check` chỉ báo file lệch |
-| Mục **E** (một việc nhiều repo) | Kiểm tra phần tương ứng ở repo kia có cần đổi theo không; nếu có thì mở issue `cross-repo` và dẫn link chéo |
+| Crawler, parser, dedup, mô hình (kỹ năng, ABSA, tìm kiếm, gợi ý, đồ thị), Dockerfile mô hình, notebook thí nghiệm, guideline gán nhãn | **WM** |
+| Helm/K8s, khai báo topic Kafka, Spark job, dbt, Great Expectations, Airflow DAG, event-generator, benchmark | **BD** |
+| API/UI của app, UML, user story, đặc tả UC, NFR, kiểm thử chấp nhận | **SAD** |
+| Schema Kafka, contract bảng, API giữa các repo, fixtures, glossary, phiên bản, ADR chung | **CHUNG** |
+| Báo cáo môn | `docs/` của repo môn đó |
+| `.env`, dữ liệu crawl, model, tập nhãn, slide giảng viên | **KHÔNG** lên repo nào |
 
-**Đánh dấu ngay trong file.** Những file có bản gốc ở nơi khác phải ghi một dòng đầu file. Người hay agent mở file ra thấy dòng này là biết không được sửa tại chỗ:
+Không có trong bảng thì hỏi: *giảng viên môn nào sẽ chấm file này?* Môn đó là repo đích. Không môn nào chấm mà nhiều repo cùng cần thì file vào **CHUNG**. Chi tiết và các ca dễ nhầm ở mục A–F bên dưới.
+
+## Cách làm việc (tóm tắt)
+
+- **Trong repo của mình:** làm tự do, push thẳng `main` cũng được, không cần PR hay ghi nhật ký.
+- **Đụng chỗ nối** (file mục A ở repo CHUNG):
+  - Sửa ở CHUNG trước.
+  - Nhắn nhóm chat một câu và ghi một dòng `joblens/NHAT-KY.md`.
+  - Đổi tên hoặc xóa trường/cột thì hỏi người đang dùng trước.
+- **File mục C** (dòng đầu ghi `ĐỒNG BỘ TỪ`): không sửa tại chỗ, báo người giữ repo `joblens` sửa bản gốc.
+- **Việc cần nhiều repo** (mục E): mỗi repo làm phần của mình. Cần nhóm kia làm thì mở issue `cross-repo` ở repo của họ.
+
+Chi tiết đầy đủ: [quy tắc làm việc chung](project-plan/09-quy-tac-lam-viec-chung.md), quy tắc 1, 3 và 10.
+
+## Nhật ký `NHAT-KY.md`
+
+Mỗi repo có một file nhật ký, **chỉ ghi các sự kiện đáng nhớ**. Việc thường ngày đã có lịch sử git.
+
+| Ghi khi | Ghi vào |
+|---|---|
+| Đổi hợp đồng (schema, contract, API) hoặc file cấu hình chung | `joblens/NHAT-KY.md` |
+| Ghép hệ thống, chốt số liệu báo cáo | `joblens/NHAT-KY.md` và nhật ký repo môn liên quan |
+| Quyết định quan trọng trong một repo (đổi hướng làm, bỏ một bài khai phá…) | Nhật ký của repo đó |
+
+Mẫu: mục mới đặt trên cùng, vài dòng là đủ.
+
+```markdown
+## 2026-10-05 · <Họ tên>
+
+- Thêm cột `salary_currency_original` vào `silver.job_postings` (contract 0.2.0). Đã báo nhóm BD, WM.
+- AI: Claude Code – nháp contract; <người> đã kiểm tra
+```
+
+## Dành cho người giữ repo `joblens`
+
+**Đánh dấu file có bản gốc ở nơi khác.** Script đồng bộ tự thêm dòng này; người tự tạo file mục E hoặc file sinh từ schema thì tự thêm:
 
 | File | Dòng đánh dấu (comment theo cú pháp của file) |
 |---|---|
 | Mục C (`.gitignore`, `.pre-commit-config.yaml`, `.env.example`, `.gitattributes`) | `# ĐỒNG BỘ TỪ joblens/docs/project-plan/templates/<tên> – sửa ở đó trước, không sửa tại đây` |
 | `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/joblens.mdc` | `<!-- ĐỒNG BỘ TỪ joblens/docs/project-plan/templates/<tên> – sửa ở đó trước, không sửa tại đây -->` |
-| Mục E (phần việc của repo này trong một việc nhiều repo) | `# LIÊN QUAN: <repo>/<đường dẫn> – đổi file này thì kiểm tra file kia` |
+| Mục E (phần việc của repo này trong một việc nhiều repo) – không bắt buộc | `# LIÊN QUAN: <repo>/<đường dẫn> – đổi file này thì kiểm tra file kia` |
 | File trong repo môn sinh ra từ hợp đồng (ví dụ model Pydantic sinh từ schema) | `# SINH TỪ joblens schemas/kafka/<tên>.json @ v<x.y.z> – không sửa tay` |
 
-Bản gốc của các file mục C ở `joblens/docs/project-plan/templates/`:
+**Đồng bộ file mục C:**
+1. Sửa bản gốc trong `joblens/docs/project-plan/templates/`.
+2. Trong repo `joblens`, với 4 repo clone cạnh nhau, chạy `python scripts/sync_templates.py ..`.
+3. Commit ở từng repo.
+
+`--check` chỉ báo file lệch, không ghi.
 
 | File trong repo | Bản gốc |
 |---|---|
@@ -50,42 +80,10 @@ Bản gốc của các file mục C ở `joblens/docs/project-plan/templates/`:
 | `.pre-commit-config.yaml` | `pre-commit-config.yaml` |
 | `.env.example` | `env.example` |
 | `.gitattributes` | `gitattributes.template` |
-| `CONTRIBUTING.md` | `CONTRIBUTING.md` (bản chép chỉ khác đường dẫn tới quy tắc 9 và repo-routing) |
+| `CONTRIBUTING.md` | `CONTRIBUTING.md` (bản chép chỉ khác các đường dẫn) |
 | `AGENTS.md` | `AGENTS.md` + `agents/{joblens,big-data,web-mining,pttkht}.md` |
 | `CLAUDE.md` | `CLAUDE.md` |
 | `.cursor/rules/joblens.mdc` | `cursor-rule.mdc` |
-
-## Nhật ký thay đổi
-
-Mỗi repo có một file **`NHAT-KY.md`** ở thư mục gốc. Nhật ký trả lời được câu hỏi: ai, khi nào, tạo/sửa/xóa file gì, vì sao, có dùng AI không. Nhật ký cũng là bằng chứng đóng góp theo môn (R6, R7) và là tư liệu cho phần Human-AI collaboration của môn SA&D.
-
-**Ghi vào đâu:**
-
-| Thay đổi | Ghi vào |
-|---|---|
-| Chỉ chạm file mục B/D của một repo | `NHAT-KY.md` của repo đó |
-| Chạm file mục A (schema, fixtures, glossary…) | `joblens/NHAT-KY.md`; repo môn cập nhật version sau đó thì ghi thêm vào nhật ký repo môn |
-| Đồng bộ file mục C | `joblens/NHAT-KY.md` (bản gốc) **và** nhật ký của từng repo được chép sang |
-| Việc nhiều repo (mục E) | Nhật ký của từng repo có file thay đổi, **và** một mục tóm tắt trong `joblens/NHAT-KY.md` kèm link chéo |
-
-**Khi nào ghi:** mỗi PR một mục, ghi trong chính PR đó. Liệt kê:
-- Mọi file **tạo mới** hoặc **xóa**.
-- Mọi file thuộc mục A, C, E **bị sửa**.
-
-Sửa nhỏ trong file mục B/D chỉ cần một dòng tóm tắt. Mục mới nhất đặt **trên cùng**. Nếu hai PR cùng thêm mục và bị xung đột thì giữ cả hai.
-
-**Mẫu một mục:**
-
-```markdown
-## 2026-10-05 · <Họ tên> · PR #<số>
-
-- **Tạo:** `crawler/spiders/topcv.py` (B)
-- **Sửa:** `.pre-commit-config.yaml` (C – đồng bộ từ joblens)
-- **Xóa:** –
-- **Lý do:** <một câu>
-- **Ảnh hưởng repo khác:** không | <repo>#<issue/PR>
-- **AI:** không | <công cụ> – <phần nào>; <người> đã kiểm tra
-```
 
 ## Nguyên tắc
 
@@ -157,7 +155,7 @@ Sửa nhỏ trong file mục B/D chỉ cần một dòng tóm tắt. Mục mới
 
 ## C. Có ở cả 4 repo, nội dung giống nhau
 
-Bản gốc ở `joblens/docs/project-plan/templates/`. Muốn đổi thì sửa bản gốc trước (PR vào **CHUNG**), sau đó chép sang 3 repo môn trong cùng ngày.
+Bản gốc ở `joblens/docs/project-plan/templates/`. Muốn đổi thì sửa bản gốc ở **CHUNG**, rồi chạy script đồng bộ sang 3 repo môn.
 
 | File | Ghi chú |
 |---|---|
@@ -177,7 +175,7 @@ Chỉ trùng tên file. Nội dung mỗi repo tự viết, không chép giữa c
 | File | Riêng ở chỗ |
 |---|---|
 | `README.md` | Khung "Phạm vi đánh giá", thành viên, cách chạy |
-| `NHAT-KY.md` | Nhật ký thay đổi của chính repo đó (mục [Nhật ký thay đổi](#nhật-ký-thay-đổi)) |
+| `NHAT-KY.md` | Nhật ký sự kiện đáng nhớ của chính repo đó (xem mục Nhật ký ở trên) |
 | `docs/` (nguồn báo cáo) | Mỗi môn viết lại phần bối cảnh theo góc nhìn của mình, tối đa ~1 trang |
 | `docs/adr/` | ADR của repo nào nằm ở repo đó; danh mục chung ghi ở `joblens/adr-index.md` |
 | `pyproject.toml`, `uv.lock` / `requirements*.txt` | Thư viện riêng; Python 3.12 chung |

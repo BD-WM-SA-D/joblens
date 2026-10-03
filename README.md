@@ -58,11 +58,13 @@ adr-index.md            danh mục ADR của cả 3 repo
 
 ## Đổi schema
 
-Đổi schema thì sửa ở đây **trước**, sửa code ở repo khác sau (docs/project-plan/09, quy tắc 1):
+Hợp đồng sửa ở đây **trước**, code ở repo khác sửa sau (docs/project-plan/09, quy tắc 1):
 
-- Thêm trường không bắt buộc thì tăng *minor*. Đổi tên hoặc xóa trường thì tăng *major* và tạo schema/topic `.vN` mới, chạy song song với bản cũ.
-- PR sửa repo này phải báo trong nhóm chat và chờ 24 giờ. Thay đổi *major* phải chờ người phụ trách repo bị ảnh hưởng xác nhận.
-- Mỗi lần phát hành gắn git tag SemVer (`v0.1.0`, `v1.0.0`…).
+- Giai đoạn `draft` (tới buổi ghép đầu tiên): sửa thoải mái, chỉ cần nhắn nhóm chat một câu và ghi một dòng `NHAT-KY.md`.
+- Sau khi `stable`:
+  - Thêm trường không bắt buộc: tăng *minor* và báo nhóm.
+  - Đổi tên hoặc xóa: hỏi người đang dùng, họ "ok" thì đổi. Tăng *major* và tạo `.vN` mới nếu cần chạy song song.
+- Nên qua PR để CI chạy, không cần chờ duyệt. Mỗi lần phát hành gắn git tag SemVer.
 
 ## Tài liệu
 

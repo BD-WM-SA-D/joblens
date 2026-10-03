@@ -219,9 +219,8 @@ Hai chức năng này chưa ai nhận.
 
 ## Cách duyệt
 
-- Mỗi người phụ trách repo trả lời trong PR hoặc nhóm chat theo từng điểm: `D1 ok`, `D3 không – vì …`.
-- D1, D3, D4, D5 có thể phá vỡ tương thích, nên phải có **đủ 3 người phụ trách đồng ý**. D2, D6, D7 áp dụng quy tắc 24 giờ không ai phản đối.
-- Điểm nào bị bác thì ghi phương án được chọn và lý do vào bảng dưới, rồi đổi trạng thái ADR thành **ĐÃ CHẤP NHẬN**.
+- Cả nhóm đọc rồi chốt trong một buổi họp ngắn hoặc trong nhóm chat, theo từng điểm: `D1 ok`, `D3 không – vì …`.
+- Điểm nào bị bác thì ghi phương án được chọn và lý do vào bảng dưới, sửa contract tương ứng, rồi đổi trạng thái ADR thành **ĐÃ CHẤP NHẬN**.
 
 | Điểm | Kết quả | Phương án | Ngày | Ghi chú |
 |---|---|---|---|---|
