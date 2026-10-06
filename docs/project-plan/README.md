@@ -7,7 +7,7 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 | Môn | Câu hỏi môn này chấm | Repo nộp |
 |---|---|---|
 | IT4931 Big Data Storage and Processing | Dữ liệu được di chuyển, lưu trữ, xử lý ở quy mô lớn thế nào, vì sao chọn như vậy? | `Big-Data-Storage-and-Processing-joblens` |
-| Web Mining | Tri thức gì được khai phá từ dữ liệu web, bằng kỹ thuật nào, tốt đến đâu? | `Web-mining-joblens` |
+| IT4868E Web Mining | Tri thức gì được khai phá từ dữ liệu web, bằng kỹ thuật nào, tốt đến đâu? | `Web-mining-joblens` |
 | IT3120 Phân tích thiết kế hệ thống | Hệ thống phục vụ ai, cần đáp ứng gì, được thiết kế thế nào? | `PTTKHT-joblens` |
 
 > **Cập nhật 02/10/2026:** tên repo/org theo GitHub thật (`BD-WM-SA-D`); ranh giới xử lý giữa các repo theo [ADR 0001](../adr/0001-ranh-gioi-xu-ly-giua-cac-repo.md) (đang chờ nhóm duyệt); hợp đồng dữ liệu ở [`schemas/`](../../schemas/README.md).

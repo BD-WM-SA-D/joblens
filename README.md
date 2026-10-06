@@ -4,7 +4,7 @@ Hợp đồng dữ liệu dùng chung của dự án JobLens VN: JSON Schema cho
 
 > **Phạm vi đánh giá – repo dùng chung, không phải repo nộp của môn nào**
 >
-> Dự án JobLens dùng chung một hệ thống cho ba môn học kỳ 20261: IT4931 Big Data Storage and Processing, Web Mining (<mã môn>) và IT3120 Phân tích thiết kế hệ thống (đã được giảng viên đồng ý ngày <dd/mm/yyyy>). Repo này chỉ chứa hợp đồng dữ liệu và tài liệu chung, mọi repo môn đều tham chiếu tới nó. Nội dung ở đây **không** được đề nghị chấm như đóng góp chính của môn nào. Thiết kế topic và schema message thuộc môn Big Data theo ma trận sở hữu, file schema chỉ được đặt ở đây để các repo cùng dùng.
+> Dự án JobLens dùng chung một hệ thống cho ba môn học kỳ 20261: IT4931 Big Data Storage and Processing, Web Mining (IT4868E) và IT3120 Phân tích thiết kế hệ thống (đã được giảng viên đồng ý ngày <dd/mm/yyyy>). Repo này chỉ chứa hợp đồng dữ liệu và tài liệu chung, mọi repo môn đều tham chiếu tới nó. Nội dung ở đây **không** được đề nghị chấm như đóng góp chính của môn nào. Thiết kế topic và schema message thuộc môn Big Data theo ma trận sở hữu, file schema chỉ được đặt ở đây để các repo cùng dùng.
 
 > Tên repo trên GitHub là `joblens`, giữ vai trò `joblens-contracts` trong tài liệu kế hoạch. Bảng đối chiếu tên nằm ở mục [Repo trong org](#repo-trong-org).
 
