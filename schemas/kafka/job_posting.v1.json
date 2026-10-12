@@ -1,16 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/BD-WM-SA-D/joblens/schemas/kafka/job_posting.v1.json",
-  "x-version": "1.1.0",
+  "x-version": "1.2.0",
   "title": "job_posting v1",
-  "description": "Message tin tuyển dụng thô trên các topic jobs.raw.<nguồn>.v1 (ví dụ jobs.raw.topcv.v1). Kafka key = source_job_id. Không chứa dữ liệu cá nhân: không có tên/email/SĐT người liên hệ (docs/02, Luật 91/2025/QH15). Bản 1.1.0 thêm raw_html_uri (ADR 0001 D1).",
+  "description": "Message tin tuyển dụng thô trên các topic jobs.raw.<nguồn>.v1 (ví dụ jobs.raw.topcv.v1). Kafka key = source_job_id. Không chứa dữ liệu cá nhân: không có tên/email/SĐT người liên hệ (docs/02, Luật 91/2025/QH15). Bản 1.1.0 thêm raw_html_uri (ADR 0001 D1). Bản 1.2.0 cho phép thiếu url khi source = vietjobs (dataset không có URL).",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema_version",
     "source",
     "source_job_id",
-    "url",
     "crawl_ts",
     "content_hash",
     "payload"
@@ -34,7 +33,11 @@
       "minLength": 1
     },
     "url": {
-      "type": "string",
+      "description": "URL tin trên trang nguồn. Bắt buộc với mọi nguồn trừ vietjobs (dataset không có URL); với vietjobs có thể bỏ hoặc để null.",
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "uri"
     },
     "crawl_ts": {
@@ -161,6 +164,26 @@
             "null"
           ]
         }
+      }
+    }
+  },
+  "if": {
+    "properties": {
+      "source": {
+        "const": "vietjobs"
+      }
+    },
+    "required": [
+      "source"
+    ]
+  },
+  "else": {
+    "required": [
+      "url"
+    ],
+    "properties": {
+      "url": {
+        "type": "string"
       }
     }
   }

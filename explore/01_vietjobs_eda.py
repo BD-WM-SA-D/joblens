@@ -170,10 +170,7 @@ def main() -> None:
             f"\n## Gần trùng (khóa thô: tiêu đề chuẩn hóa + địa điểm)\n\nTỉ lệ tin nằm trong nhóm trùng khóa: {dup:.1%} – cần MinHash trên nội dung để tách tin đăng lại thật sự với tin khác nhau cùng tiêu đề."
         )
 
-    say("\n## Một bản ghi mẫu\n")
-    say("```")
-    say(df.drop(columns=[c for c in ["sal_lo", "sal_hi", "sal_kind"] if c in df.columns]).iloc[0].to_string()[:2500])
-    say("```")
+    # Không in bản ghi mẫu: báo cáo chỉ chứa số liệu thống kê, commit được.
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUT_DIR / "vietjobs_eda.md").write_text("\n".join(lines), encoding="utf-8")
