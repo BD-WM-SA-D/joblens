@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: silver.job_skills
-version: 0.1.0
+version: 0.1.1
 status: draft
 description: Kỹ năng trích từ tin (WM2), đã chuẩn hóa về ESCO/alias. Do image skill-extractor của WM ghi, Airflow của BD chạy (ADR 0001 D3).
 writer_repo: Web-mining-joblens
@@ -12,6 +12,9 @@ readers:
 used_by:
 - UC002
 - UC004
+- UC011
+- UC012
+- UC013
 - WM2
 - WM5
 - WM6

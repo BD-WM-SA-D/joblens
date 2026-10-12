@@ -1,15 +1,15 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: gold.mart_job_reco_candidates
-version: 0.1.0
+version: 0.2.0
 status: draft
-description: Danh sách gợi ý việc làm đã xếp hạng (UC004), từ silver.reco_scores; chỉ giữ tin còn mở và một tin mỗi dup_group_id.
+description: Danh sách gợi ý việc làm đã xếp hạng cho người dùng synthetic (đánh giá offline WM5, ADR 0002), từ silver.reco_scores; chỉ giữ tin còn mở và một tin mỗi dup_group_id.
 writer_repo: Big-Data-Storage-and-Processing-joblens
 writer_component: dbt model mart_job_reco_candidates
 readers:
-- PTTKHT-joblens
+- Web-mining-joblens
 used_by:
-- UC004
+- WM5
 write_mode: dbt
 partition_spec: []
 primary_key:
@@ -50,3 +50,5 @@ columns:
   type: date
   nullable: false
   description: Ngày sinh gợi ý
+notes:
+- 'ADR 0002: chỉ dùng cho đánh giá offline WM5 trên người dùng synthetic và thí nghiệm ALS của BD. Cổng (PTTKHT) không đọc bảng này; gợi ý cho người dùng thật đi qua mining-service.'

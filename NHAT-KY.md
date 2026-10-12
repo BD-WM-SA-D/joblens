@@ -2,6 +2,22 @@
 
 Chỉ ghi sự kiện đáng nhớ: đổi hợp đồng hoặc file cấu hình chung, ghép hệ thống, chốt số liệu, quyết định quan trọng. Việc thường ngày đã có lịch sử git. Mục mới đặt trên cùng, vài dòng là đủ – xem [repo-routing](docs/repo-routing.md), mục Nhật ký.
 
+## 2026-10-12 · Hoang Le
+
+- Thêm [Blueprint hệ thống](docs/project-plan/14-blueprint-he-thong.md) (đề xuất): persona, cách tương tác, UC thu hẹp, kiến trúc 4+1, dữ liệu, API. Sửa docs/05, docs/06, docs/07 (UC008 → UC009), mục lục.
+- Thêm [ADR 0002](docs/adr/0002-goi-y-truc-tuyen-tu-ho-so-ky-nang.md) và hợp đồng `schemas/api/mining.v1.yaml` (draft): gợi ý trực tuyến qua `mining-service`.
+- Contract (draft): `gold.dim_skill` 0.2.0 thêm `aliases`; `silver.review_aspects` 0.2.0 thêm `sentence_text`; mới `gold.data_status`; `gold.mart_job_reco_candidates` 0.2.0 chỉ còn cho đánh giá offline WM5 (reader: Web-mining); cập nhật `used_by` (UC011–UC013) ở `job_skills`, `job_postings`, `job_dedup`, `mart_company_aspect_sentiment`, `reco_scores`.
+- `templates/agents/pttkht.md`: CSDL ứng dụng, `mining.v1`; đồng bộ `AGENTS.md` sang PTTKHT.
+- Ảnh hưởng: WM (làm `mining-service` + stub, ghi `sentence_text`, cung cấp alias kỹ năng), BD (triển khai `mining-service`, `dim_skill.aliases`, `data_status`), PTTKHT (đã cập nhật tài liệu) – đã nhắn nhóm: <chưa>.
+- **Chốt chiến lược dữ liệu:** tin crawl (TopCV, ITviec) là dữ liệu chính; VietJobs chỉ cho nhãn yếu/từ điển WM2, baseline, đo tải + GX + replay của BD, dự phòng. Sửa docs/02, 11, 13, 14, mục lục; note lọc `source = vietjobs` trong `silver.job_postings` 0.1.2, `gold.mart_skill_demand_monthly` 0.1.1, `gold.mart_salary_role_region` 0.1.1. Ảnh hưởng BD – đã nhắn nhóm: <chưa>.
+- AI: Claude Code (Claude Opus 5.5) – soạn blueprint, ADR, contract; <người kiểm tra> đã kiểm tra
+
+## 2026-10-07 · Hoang Le
+
+- `job_posting.v1` lên 1.2.0: `url` không bắt buộc khi `source = vietjobs` (dataset VietJobs không có URL). Nguồn khác vẫn bắt buộc như cũ. Ảnh hưởng: Big Data (replay VietJobs vào bronze) – đã nhắn nhóm: <chưa>.
+- Thêm `explore/out/vietjobs_eda.md`: số liệu EDA VietJobs đầy đủ (48.092 tin), chỉ có thống kê, không có bản ghi gốc.
+- AI: Claude Code (Claude Opus 5.5) – sửa schema, chạy EDA; <người kiểm tra> đã kiểm tra
+
 ## 2026-10-03 · Hoang Le
 
 - Đơn giản hóa quy trình: trong repo môn làm tự do (push thẳng `main` được, không bắt buộc PR, không ghi nhật ký việc thường ngày); chỉ chỗ nối (hợp đồng ở `joblens`, file cấu hình chung) mới cần nhắn nhóm + ghi một dòng nhật ký; đổi tên/xóa trường thì hỏi người đang dùng; ghép hệ thống theo mốc thay vì hằng tuần; bỏ chờ 24 giờ.

@@ -31,6 +31,7 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 | 11 | [Rủi ro và câu hỏi cho giảng viên](11-rui-ro-va-cau-hoi.md) | Rủi ro + dự phòng, câu hỏi cần xác nhận |
 | 12 | [Tài liệu tham khảo](12-tai-lieu-tham-khao.md) | Bài giảng, bài báo, tài liệu công nghệ, dataset, pháp lý |
 | 13 | [Khám phá dữ liệu trước khi làm](13-kham-pha-du-lieu.md) | Kết quả xem thực tế VietJobs, TopCV, ITviec, ESCO, UIT-VSFC; cách tự xem; script `explore/01_vietjobs_eda.py` |
+| 14 | [Blueprint hệ thống](14-blueprint-he-thong.md) | **Đề xuất chốt phạm vi:** persona, cách tương tác, UC đã thu hẹp, kiến trúc 4+1, dữ liệu, API, mẫu thiết kế, việc kéo theo ở từng repo |
 | – | [Mẫu README repo](templates/README-repo.md) · [Mẫu CONTRIBUTING](templates/CONTRIBUTING.md) · [`.gitignore` mẫu](templates/gitignore.template) · [pre-commit mẫu](templates/pre-commit-config.yaml) | Bản gốc file cấu hình chung – đồng bộ sang 4 repo bằng `scripts/sync_templates.py` |
 
 ## Đọc theo vai trò
@@ -43,7 +44,7 @@ Một hệ thống dùng chung cho ba môn học kỳ **20261** của nhóm 4–
 
 ## Các quyết định chính (đề xuất)
 
-- **Domain:** thị trường tuyển dụng, dữ liệu **hybrid**: VietJobs làm nền (pipeline, WM8, baseline) + crawl nhỏ tăng dần TopCV ngành IT (streaming, WM2) + review ITviec (WM3); replay VietJobs vào Kafka nếu crawl thất bại ([chi tiết](13-kham-pha-du-lieu.md#chiến-lược-dữ-liệu-hybrid-đề-xuất)).
+- **Domain:** thị trường tuyển dụng IT. **Dữ liệu chính là tin tự crawl** (TopCV, ITviec) + review ITviec; VietJobs dùng cho nhãn yếu WM2, baseline, đo tải và dự phòng ([chi tiết](13-kham-pha-du-lieu.md#chiến-lược-dữ-liệu-crawl-là-dữ-liệu-chính-vietjobs-phục-vụ-việc-khác-chốt-2026-10-12)).
 - **Nền tảng:** Kafka (Strimzi) → Spark 4.1 (batch + Structured Streaming) → Iceberg 1.11 trên SeaweedFS, catalog Lakekeeper → dbt → Great Expectations → Airflow 3 → Trino; chạy trên k3d; bám slide L14 "Project ideas".
 - **Khai phá lõi:** thu thập + dedup, trích xuất kỹ năng (PhoBERT), ABSA review công ty; mở rộng: tìm kiếm/gợi ý, đồ thị kỹ năng.
 - **SA&D:** cổng JobLens (actor: người tìm việc, HR/chuyên viên, quản trị dữ liệu) với nền tảng dữ liệu là hệ thống con.

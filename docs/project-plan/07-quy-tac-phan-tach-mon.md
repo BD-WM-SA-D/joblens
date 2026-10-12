@@ -10,7 +10,7 @@ Ký hiệu: **A** = môn chấm chính, **R** = chỉ tham chiếu, **–** = kh
 
 | Thành phần / artifact | Big Data | Web Mining | SA&D |
 |---|---|---|---|
-| Spider, parser, lịch sự khi crawl, dedup (thuật toán + đánh giá) | R (chỉ producer → Kafka) | **A** | R (UC008) |
+| Spider, parser, lịch sự khi crawl, dedup (thuật toán + đánh giá) | R (chỉ producer → Kafka) | **A** | R (UC009) |
 | Thiết kế topic Kafka, schema message, producer/consumer config | **A** | – | R (deployment) |
 | Bảng Iceberg, zone bronze/silver/gold, partition spec, compaction | **A** | R (đọc dữ liệu) | R (lớp trường cửu/ERD) |
 | dbt models, GX suites, Airflow DAG | **A** | – | R (UC009) |

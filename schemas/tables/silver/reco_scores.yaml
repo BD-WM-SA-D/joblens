@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: silver.reco_scores
-version: 0.1.0
+version: 0.1.1
 status: draft
 description: Điểm gợi ý việc làm (WM5) cho người dùng synthetic. Nguồn của gold.mart_job_reco_candidates.
 writer_repo: Web-mining-joblens
@@ -9,7 +9,6 @@ writer_component: image recsys-scorer (KubernetesPodOperator)
 readers:
 - Big-Data-Storage-and-Processing-joblens
 used_by:
-- UC004
 - WM5
 write_mode: overwrite_partition
 partition_spec:

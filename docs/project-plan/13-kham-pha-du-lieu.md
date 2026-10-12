@@ -94,18 +94,30 @@ Lấy từ bài báo, chưa kiểm chứng trên bản đầy đủ.
 
 Hệ quả: tin IT quá ít cho WM2 nên cần crawl thêm; WM8 có baseline thấp để so sánh; cột kỹ năng là nhãn do LLM sinh.
 
-## Chiến lược dữ liệu: hybrid (đề xuất)
+## Chiến lược dữ liệu: crawl là dữ liệu chính, VietJobs phục vụ việc khác (chốt 2026-10-12)
 
-VietJobs làm nền, cộng phần crawl nhỏ và có kiểm soát. Không chỉ dùng một bên: chỉ VietJobs thì thiếu tin IT, thiếu dữ liệu "sống" cho Big Data và không có review công ty; chỉ crawl thì rủi ro bị chặn cao và không có baseline để so sánh.
+> Thay cho bản "hybrid – VietJobs làm nền" trước đây. Lý do: VietJobs bản đầy đủ **không có** `company_name`, `posting_date`, `url`, `deadline` (EDA 2026-10-07) nên không dùng được cho dedup giữa các trang, chi tiết tin, nối tin với review công ty, xu hướng theo thời gian và cảnh báo tin mới – đúng những chức năng chính của [blueprint](14-blueprint-he-thong.md).
 
-| Việc | Nguồn | Lý do |
+**Dữ liệu chính của hệ thống** = tin tự crawl từ TopCV, ITviec (ngành IT) + review công khai ITviec, crawl đều hằng ngày đến cuối kỳ.
+
+| Việc | Nguồn | Ghi chú |
 |---|---|---|
-| Dựng pipeline, dbt, Iceberg, dashboard giai đoạn đầu | VietJobs | Có dữ liệu ngay từ tuần 1 |
-| Phân loại nghề (WM8), thống kê lương | VietJobs | Có nhãn, split 80/10/10, baseline công bố |
-| Streaming và dữ liệu mới | Crawl TopCV ngành IT theo sitemap `lastmod`, tăng dần | Velocity; VietJobs là snapshot tĩnh |
-| Trích xuất kỹ năng (WM2) | Tin IT tự crawl; tag nhà tuyển dụng làm nhãn yếu | VietJobs chỉ ~1.900 tin IT, nhãn do LLM sinh |
-| Review công ty (WM3) | ITviec, ~20–50 công ty | Không có nguồn thay thế |
-| Dự phòng | Replay VietJobs vào Kafka | Hệ thống vẫn demo được nếu crawl thất bại |
+| Mọi bảng app hiển thị (UC001, UC011, UC012, UC005, UC002, UC006) | **Crawl** | Có URL, công ty, ngày; tin VietJobs không hiện trong app |
+| Dedup giữa các trang (WM1) | **Crawl** TopCV + ITviec | VietJobs chỉ một nguồn |
+| Tập test WM2 (~1.000 câu, người gán) | **Crawl** TopCV | Cùng loại với dữ liệu hệ thống xử lý |
+| Review công ty (WM3) | ITviec | Không có nguồn thay thế |
+| Thí nghiệm batch vs streaming, độ tươi, cảnh báo (BD) | **Crawl** | Dữ liệu "sống" |
+| Nhãn yếu để huấn luyện WM2 | VietJobs `technical_skills` (48k tin) | Nhãn do LLM sinh – không bao giờ dùng làm test |
+| Từ điển alias kỹ năng | VietJobs (đã làm: 200 kỹ năng, 442 cách viết) | Bổ sung bằng tag TopCV khi có crawl |
+| Dev set / luyện guideline WM2 | VietJobs `skill_batch1`, dừng ở ~300 câu | |
+| So sánh với nghiên cứu đã công bố | VietJobs (baseline LREC 2026) | |
+| Đo throughput, lag, chịu tải (BD) | VietJobs replay vào Kafka, có thể nhân bản ID | Dữ liệu crawl quá nhỏ để thử tải |
+| Kiểm tra chất lượng GX (BD) | VietJobs (404 tin lệch lương – lỗi thật) | |
+| Dự phòng khi bị chặn crawl | Replay VietJobs | Hệ thống vẫn chạy, nhưng UC001/UC011/UC005 nghèo dữ liệu |
+
+**Quy tắc cho BD:** VietJobs không có ngày đăng, nên `first_seen_ts` của nó là ngày nạp. Mọi mart theo thời gian (`gold.mart_skill_demand_monthly`) và bảng app hiển thị **lọc bỏ `source = 'vietjobs'`**; `gold.mart_salary_role_region` được lấy VietJobs nếu giữ cột nguồn để lọc.
+
+**Hạn chế phải nêu trong báo cáo:** xu hướng theo tháng chỉ có khoảng 2–3 tháng dữ liệu crawl.
 
 ### Cổng quyết định sau 1–2 tuần
 
@@ -113,11 +125,11 @@ VietJobs làm nền, cộng phần crawl nhỏ và có kiểm soát. Không ch�
 - [ ] Crawl thử 200 tin TopCV (1 request/giây): tỉ lệ có lương, có tag kỹ năng, có bị chặn không?
 - [ ] Đếm review công khai ITviec trên ~20 công ty.
 
-Nếu crawl hoặc review thất bại: lùi về VietJobs + crawler nhỏ chạy tăng dần, và bỏ hoặc thu hẹp WM3. Nên hỏi giảng viên Big Data về yêu cầu "dữ liệu tự thu thập" (câu 8 trong [Rủi ro và câu hỏi](11-rui-ro-va-cau-hoi.md)).
+Nếu crawl hoặc review thất bại: lùi về replay VietJobs + crawler nhỏ chạy tăng dần, thu hẹp các UC cần dữ liệu crawl, và bỏ hoặc thu hẹp WM3. Nên hỏi giảng viên Big Data về yêu cầu "dữ liệu tự thu thập" (câu 8 trong [Rủi ro và câu hỏi](11-rui-ro-va-cau-hoi.md)).
 
 ## Việc tiếp theo
 
-- [ ] Chạy `explore/01_vietjobs_eda.py` trên bản VietJobs đầy đủ, cập nhật bảng VietJobs ở trên.
+- [x] Chạy `explore/01_vietjobs_eda.py` trên bản VietJobs đầy đủ (2026-10-07, kết quả `explore/out/vietjobs_eda.md`).
 - [ ] Crawl thử 200 tin TopCV (1 request/giây), ghi tỉ lệ có lương, có tag kỹ năng, có địa chỉ.
 - [ ] Đếm review công khai của ~20 công ty IT trên ITviec.
 - [ ] Lập danh sách top 200 tag kỹ năng IT trên TopCV làm bản nháp từ điển alias.

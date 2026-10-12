@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: gold.mart_skill_demand_monthly
-version: 0.1.0
+version: 0.1.1
 status: draft
 description: Nhu cầu kỹ năng theo tháng (UC002).
 writer_repo: Big-Data-Storage-and-Processing-joblens
@@ -51,3 +51,5 @@ columns:
   nullable: true
   description: Thay đổi share so với tháng trước
   unit: điểm phần trăm
+notes:
+- 'Chỉ tính tin crawl: lọc bỏ source = vietjobs vì first_seen_ts của VietJobs là ngày nạp, sẽ dồn cả bộ vào một tháng (docs/13).'

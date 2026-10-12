@@ -7,8 +7,8 @@
 | Rủi ro | Khả năng | Ảnh hưởng | Dự phòng |
 |---|---|---|---|
 | Giảng viên không cho dùng chung đề tài | Trung bình | Cao | Hỏi ngay ở P0; nếu SA&D từ chối → SA&D làm đề tài quản lý riêng, BD + WM vẫn giữ JobLens |
-| Trang nguồn đổi HTML/chặn bot | Cao | Trung bình | Adapter pattern; lưu HTML thô trên S3 (`s3://joblens/raw-html/`); VietJobs làm nền; replay VietJobs vào Kafka nếu crawl hỏng; thu hẹp phạm vi crawl; không lách chống bot (xem [chiến lược hybrid](13-kham-pha-du-lieu.md#chiến-lược-dữ-liệu-hybrid-đề-xuất)) |
-| VietJobs bản đầy đủ thiếu `company_name`/`posting_date`/`url` (file mẫu 18 cột không có) | Trung bình | Trung bình | Chỉ dùng VietJobs để backfill phân bố nghề/lương và làm baseline; phân tích theo công ty/thời gian dựa vào dữ liệu tự crawl |
+| Trang nguồn đổi HTML/chặn bot | Cao | Trung bình | Adapter pattern; lưu HTML thô trên S3 (`s3://joblens/raw-html/`); replay VietJobs vào Kafka nếu crawl hỏng; thu hẹp phạm vi crawl; không lách chống bot (xem [chiến lược dữ liệu](13-kham-pha-du-lieu.md#chiến-lược-dữ-liệu-crawl-là-dữ-liệu-chính-vietjobs-phục-vụ-việc-khác-chốt-2026-10-12)) |
+| VietJobs bản đầy đủ thiếu `company_name`/`posting_date`/`url` (**đã xác nhận** 2026-10-07) | – | Đã xảy ra | Chỉ dùng VietJobs để backfill phân bố nghề/lương và làm baseline; phân tích theo công ty/thời gian dựa vào dữ liệu tự crawl |
 | Tin IT trong VietJobs quá ít (~1.900/48.000, ~4%) | Chắc chắn | Trung bình | WM2 dùng tin IT tự crawl từ TopCV (tag kỹ năng của nhà tuyển dụng làm nhãn yếu); VietJobs chỉ bổ trợ |
 | Review ITviec ít hoặc bị giới hạn khi chưa đăng nhập | Trung bình | Trung bình | Chỉ lấy review công khai; đếm thử ~20 công ty trước; nếu không đủ thì thu hẹp hoặc bỏ WM3 |
 | Máy không đủ RAM cho K8s | Cao | Cao | Tắt bớt thành phần khi không dùng; 1 broker; Trino 1 worker; VM cloud cho demo |

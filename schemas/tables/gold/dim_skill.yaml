@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: gold.dim_skill
-version: 0.1.0
+version: 0.2.0
 status: draft
 description: 'Danh mục kỹ năng: skill_id xuất hiện trong silver.job_skills kèm nhãn ESCO.'
 writer_repo: Big-Data-Storage-and-Processing-joblens
@@ -12,6 +12,8 @@ readers:
 used_by:
 - UC002
 - UC004
+- UC011
+- UC012
 write_mode: dbt
 partition_spec: []
 primary_key:
@@ -34,3 +36,7 @@ columns:
   type: string
   nullable: true
   description: skill/competence | knowledge (theo ESCO)
+- name: aliases
+  type: list<string>
+  nullable: false
+  description: 'Các cách viết khác (từ điển alias của WM, ví dụ React.js, ReactJS). App dùng để trích kỹ năng bằng từ điển khi mining-service không chạy (ADR 0002). Thêm ở 0.2.0'

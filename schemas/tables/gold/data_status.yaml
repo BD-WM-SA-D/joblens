@@ -1,0 +1,52 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.data_status
+version: 0.1.0
+status: draft
+description: Tình trạng dữ liệu theo nguồn, bản mới nhất (UC009 – trang Tình trạng dữ liệu của quản trị). Tổng hợp từ silver, dlq.parse_errors.v1 và kết quả Great Expectations.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model data_status (sau bước GX trong DAG)
+readers:
+- PTTKHT-joblens
+used_by:
+- UC009
+write_mode: dbt
+partition_spec: []
+primary_key:
+- source
+grain: một nguồn dữ liệu (chỉ giữ lần tính mới nhất)
+columns:
+- name: source
+  type: string
+  nullable: false
+  description: topcv | itviec | vietjobs
+- name: last_crawl_ts
+  type: timestamp
+  nullable: true
+  description: crawl_ts lớn nhất đã vào bronze
+- name: last_silver_ts
+  type: timestamp
+  nullable: true
+  description: Lần cập nhật silver.job_postings gần nhất của nguồn
+- name: active_jobs
+  type: long
+  nullable: false
+  description: Số tin đang mở (is_active) trong silver.job_postings
+- name: new_jobs_24h
+  type: long
+  nullable: false
+  description: Số tin có first_seen_ts trong 24 giờ qua
+- name: parse_error_rate_24h
+  type: double
+  nullable: true
+  description: Số bản ghi dlq.parse_errors.v1 / số message jobs.raw.* trong 24 giờ qua (0–1)
+- name: gx_pass_rate
+  type: double
+  nullable: true
+  description: Tỉ lệ expectation Great Expectations đạt ở lần chạy gần nhất (0–1)
+- name: computed_ts
+  type: timestamp
+  nullable: false
+  description: Thời điểm tính bảng
+notes:
+- 'Thêm theo blueprint mục 13 (docs/project-plan/14). Cổng chỉ hiển thị, không phân tích lại số liệu (R4).'

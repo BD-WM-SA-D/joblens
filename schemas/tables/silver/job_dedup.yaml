@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: silver.job_dedup
-version: 0.1.0
+version: 0.1.1
 status: draft
 description: Nhóm tin trùng (WM1). Mỗi job_uid thuộc đúng một dup_group_id; tin không trùng thì dup_group_id = job_uid của chính nó.
 writer_repo: Web-mining-joblens
@@ -13,6 +13,8 @@ used_by:
 - UC001
 - UC002
 - UC003
+- UC011
+- UC012
 - WM1
 write_mode: merge
 partition_spec:

@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: gold.mart_company_aspect_sentiment
-version: 0.1.0
+version: 0.1.1
 status: draft
 description: Đánh giá công ty theo khía cạnh (UC005), từ silver.review_aspects và điểm sao ITviec.
 writer_repo: Big-Data-Storage-and-Processing-joblens
@@ -11,6 +11,7 @@ readers:
 - Web-mining-joblens
 used_by:
 - UC005
+- UC011
 write_mode: dbt
 partition_spec: []
 primary_key:

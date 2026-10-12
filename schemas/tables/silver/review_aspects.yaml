@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: silver.review_aspects
-version: 0.1.0
+version: 0.2.0
 status: draft
 description: Kết quả ABSA trên review công ty (WM3), mức câu.
 writer_repo: Web-mining-joblens
@@ -11,6 +11,7 @@ readers:
 - PTTKHT-joblens
 used_by:
 - UC005
+- UC011
 - WM3
 write_mode: append
 partition_spec:
@@ -36,6 +37,10 @@ columns:
   type: int
   nullable: false
   description: Thứ tự câu trong review (0 = liked_text câu đầu…)
+- name: sentence_text
+  type: string
+  nullable: true
+  description: 'Câu review đã lọc PII, để UC005 hiện câu ví dụ. Thêm ở 0.2.0 (blueprint mục 13)'
 - name: aspect
   type: string
   nullable: false

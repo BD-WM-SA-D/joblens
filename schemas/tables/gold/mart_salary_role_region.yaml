@@ -1,7 +1,7 @@
 # Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
 # Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
 table: gold.mart_salary_role_region
-version: 0.1.0
+version: 0.1.1
 status: draft
 description: Mặt bằng lương theo nhóm nghề, cấp bậc, tỉnh/thành (UC003).
 writer_repo: Big-Data-Storage-and-Processing-joblens
@@ -63,3 +63,4 @@ columns:
   unit: tỉ lệ 0–1
 notes:
 - Phân vị để null khi job_count có lương < 5 (tránh số liệu ít mẫu).
+- 'Được tính cả tin VietJobs (không phụ thuộc thời gian); nếu gộp thì phải tách được theo nguồn khi báo cáo (docs/13).'

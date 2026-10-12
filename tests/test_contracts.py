@@ -54,6 +54,12 @@ def test_search_api_contract():
     assert {"/search", "/health"} <= set(api["paths"])
 
 
+def test_mining_api_contract():
+    api = yaml.safe_load((ROOT / "schemas" / "api" / "mining.v1.yaml").read_text(encoding="utf-8"))
+    assert api["openapi"].startswith("3.1")
+    assert {"/v1/skills:extract", "/v1/recommend", "/health"} <= set(api["paths"])
+
+
 def test_job_uid():
     assert job_uid("synthetic", "syn-000001") == "862e0278ea284bae21ffed05e1dafedc6baac559"
     assert job_uid("topcv", "1") != job_uid("itviec", "1")

@@ -30,16 +30,17 @@ Chi tiết cột nằm trong từng file. Định dạng file: [`tables/_contrac
 | Bảng | Repo ghi | Repo đọc | Ca sử dụng / bài |
 |---|---|---|---|
 | `bronze.jobs_raw`, `bronze.reviews_raw`, `bronze.user_events` | Big-Data | Web-mining | WM1–3, WM5 |
-| `silver.job_postings`, `silver.job_postings_snapshot` | Big-Data | Web-mining, PTTKHT | UC001, UC003 |
-| `silver.job_skills` | Web-mining (image skill-extractor) | Big-Data, PTTKHT | UC002, UC004 |
-| `silver.job_dedup` | Web-mining (image job-dedup) | Big-Data, PTTKHT | UC001–003 |
-| `silver.review_aspects` | Web-mining (image absa-scorer) | Big-Data, PTTKHT | UC005 |
-| `silver.reco_scores` | Web-mining (image recsys-scorer) | Big-Data | UC004 |
-| `gold.dim_location`, `gold.dim_skill`, `gold.dim_company` | Big-Data (dbt) | PTTKHT, Web-mining | – |
+| `silver.job_postings`, `silver.job_postings_snapshot` | Big-Data | Web-mining, PTTKHT | UC001, UC003, UC011, UC012 |
+| `silver.job_skills` | Web-mining (image skill-extractor) | Big-Data, PTTKHT | UC002, UC004, UC011–013 |
+| `silver.job_dedup` | Web-mining (image job-dedup) | Big-Data, PTTKHT | UC001–003, UC011, UC012 |
+| `silver.review_aspects` | Web-mining (image absa-scorer) | Big-Data, PTTKHT | UC005, UC011 |
+| `silver.reco_scores` | Web-mining (image recsys-scorer) | Big-Data | WM5 (đánh giá offline – ADR 0002) |
+| `gold.dim_location`, `gold.dim_skill`, `gold.dim_company` | Big-Data (dbt) | PTTKHT, Web-mining | `dim_skill.aliases`: đường lùi trích kỹ năng UC004 |
 | `gold.mart_skill_demand_monthly` | Big-Data (dbt) | PTTKHT, Web-mining | UC002 |
 | `gold.mart_salary_role_region` | Big-Data (dbt) | PTTKHT, Web-mining | UC003 |
-| `gold.mart_company_aspect_sentiment` | Big-Data (dbt) | PTTKHT, Web-mining | UC005 |
-| `gold.mart_job_reco_candidates` | Big-Data (dbt) | PTTKHT | UC004 |
+| `gold.mart_company_aspect_sentiment` | Big-Data (dbt) | PTTKHT, Web-mining | UC005, UC011 |
+| `gold.mart_job_reco_candidates` | Big-Data (dbt) | Web-mining | WM5 (đánh giá offline – ADR 0002) |
+| `gold.data_status` | Big-Data (dbt) | PTTKHT | UC009 |
 
 Bảng nội bộ của một repo (ví dụ `bronze.ingest_errors` của Big-Data) không cần contract ở đây, vì không repo nào khác đọc.
 
@@ -50,6 +51,7 @@ Bảng nội bộ của một repo (ví dụ `bronze.ingest_errors` của Big-Da
 | API | File | Repo cung cấp | Repo gọi |
 |---|---|---|---|
 | Tìm kiếm việc làm | [`api/search.v1.yaml`](api/search.v1.yaml) (OpenAPI 3.1) | Web-mining (image search-service, Big-Data triển khai) | PTTKHT (có đường lùi về Trino) |
+| Trích kỹ năng, gợi ý trực tuyến | [`api/mining.v1.yaml`](api/mining.v1.yaml) (OpenAPI 3.1) – [ADR 0002](../docs/adr/0002-goi-y-truc-tuyen-tu-ho-so-ky-nang.md) | Web-mining (image mining-service, Big-Data triển khai) | PTTKHT (có đường lùi: từ điển + đếm kỹ năng trùng) |
 
 ## Kiểm tra tự động
 
