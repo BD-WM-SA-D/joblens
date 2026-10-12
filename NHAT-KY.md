@@ -2,6 +2,12 @@
 
 Chỉ ghi sự kiện đáng nhớ: đổi hợp đồng hoặc file cấu hình chung, ghép hệ thống, chốt số liệu, quyết định quan trọng. Việc thường ngày đã có lịch sử git. Mục mới đặt trên cùng, vài dòng là đủ – xem [repo-routing](docs/repo-routing.md), mục Nhật ký.
 
+## 2026-10-12 (2) · Hoang Le
+
+- `job_posting.v1` 1.3.0: thêm `payload.date_posted` (TopCV có `datePosted` trong JSON-LD); `silver.job_postings` 0.2.0 thêm cột `posted_date`; `mart_skill_demand_monthly` tính tháng theo `posted_date`. Ảnh hưởng BD (map cột mới) – đã nhắn nhóm: <chưa>.
+- Kiểm tra robots.txt + điều khoản TopCV, ITviec (docs/02): TopCV được crawl lịch sự; **ITviec điều khoản 2.2 cần đồng ý bằng văn bản → chưa crawl, đã soạn email xin phép**. Thêm rủi ro vào docs/11.
+- AI: Claude Code (Claude Opus 5.5) – đọc điều khoản, sửa schema/contract; <người kiểm tra> đã kiểm tra
+
 ## 2026-10-12 · Hoang Le
 
 - Thêm [Blueprint hệ thống](docs/project-plan/14-blueprint-he-thong.md) (đề xuất): persona, cách tương tác, UC thu hẹp, kiến trúc 4+1, dữ liệu, API. Sửa docs/05, docs/06, docs/07 (UC008 → UC009), mục lục.

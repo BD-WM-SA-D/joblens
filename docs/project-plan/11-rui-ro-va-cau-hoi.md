@@ -11,6 +11,7 @@
 | VietJobs bản đầy đủ thiếu `company_name`/`posting_date`/`url` (**đã xác nhận** 2026-10-07) | – | Đã xảy ra | Chỉ dùng VietJobs để backfill phân bố nghề/lương và làm baseline; phân tích theo công ty/thời gian dựa vào dữ liệu tự crawl |
 | Tin IT trong VietJobs quá ít (~1.900/48.000, ~4%) | Chắc chắn | Trung bình | WM2 dùng tin IT tự crawl từ TopCV (tag kỹ năng của nhà tuyển dụng làm nhãn yếu); VietJobs chỉ bổ trợ |
 | Review ITviec ít hoặc bị giới hạn khi chưa đăng nhập | Trung bình | Trung bình | Chỉ lấy review công khai; đếm thử ~20 công ty trước; nếu không đủ thì thu hẹp hoặc bỏ WM3 |
+| **ITviec không cho phép** (điều khoản mục 2.2 yêu cầu đồng ý bằng văn bản – kiểm tra 2026-10-12) | Trung bình | Cao | Đã gửi email xin phép: <ngày gửi>. Chưa có trả lời thì không crawl ITviec. Dự phòng: (1) trang tuyển dụng thứ hai khác cho dedup WM1 (kiểm tra robots.txt + điều khoản trước); (2) nguồn review công ty khác hoặc thu hẹp WM3; (3) hỏi giảng viên |
 | Máy không đủ RAM cho K8s | Cao | Cao | Tắt bớt thành phần khi không dùng; 1 broker; Trino 1 worker; VM cloud cho demo |
 | Lệch phiên bản (Spark/Iceberg/operator) | Trung bình | Trung bình | Pin trong `joblens/versions.md`; Spark 4.1 + Iceberg 1.11; submit native k8s thay vì phụ thuộc Spark Operator (Dockerfile của operator đang pin Spark 4.0) |
 | Gán nhãn tốn thời gian | Cao | Trung bình | Gán nhãn yếu bằng từ điển rồi sửa tay; giới hạn cỡ tập (xem [Web Mining](04-khai-pha-web-mining.md)); đo κ trên mẫu nhỏ |

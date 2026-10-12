@@ -19,6 +19,7 @@
       "employment_type": "Toàn thời gian",
       "category": "IT phần mềm",
       "deadline": "2026-10-31",
+      "date_posted": "2026-09-28",
       "skill_tags": ["Python", "SQL", "Apache Spark"],
       "description": "Xây dựng pipeline dữ liệu, viết job Spark xử lý dữ liệu tuyển dụng.",
       "requirements": "Thành thạo Python và SQL; biết Kafka là lợi thế.",

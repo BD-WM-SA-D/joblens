@@ -45,4 +45,12 @@ Các con số trên là ước lượng để lập kế hoạch; nhóm đo th�
 
 - **Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15** có hiệu lực từ 01/01/2026, cùng Nghị định hướng dẫn 356/2025/NĐ-CP ([Tilleke & Gibbins](https://www.tilleke.com/insights/vietnams-new-personal-data-protection-law-a-closer-look/)). Đề xuất xử lý: không thu thập CV/trang cần đăng nhập; loại bỏ ngay ở tầng silver mọi trường có thể là dữ liệu cá nhân (tên người liên hệ, email, SĐT, tên người review); HTML thô đã qua bộ lọc PII lưu ở `s3://joblens/raw-html/` với thời hạn 30 ngày, không nằm trong bronze (ADR 0001 D1); dữ liệu chỉ dùng cho mục đích học tập, không chia sẻ lại. (Đây không phải tư vấn pháp lý – nhóm nên hỏi giảng viên nếu có quy định riêng của trường.)
 - Tôn trọng robots.txt và điều khoản sử dụng từng trang; dừng crawl nếu bị yêu cầu.
+
+### Kết quả kiểm tra robots.txt và điều khoản (2026-10-12)
+
+| | TopCV | ITviec |
+|---|---|---|
+| robots.txt | Cho phép trang tin; chặn `/cv/get-private-url/`, `/private/`, `/xem-cv/`, `/xem-cv-draft/`, `/sua-cv/`, `/viet-cv/`, `/edit/cv/`, `/cv-ung-vien/`, `/cv-ung-tuyen/`, `/p/`. Sitemap: `https://www.topcv.vn/sitemap.xml` | Cho phép toàn bộ trừ `/subscriptions/new`. Sitemap: `https://itviec.com/dunggiatminh.xml` |
+| Điều khoản | [Terms of Service](https://topcv.vn/terms-of-service) (01/04/2025): không có điều khoản về bot/crawl; mục 6.2 cấm sao chép, hiển thị, phân phối "Nội dung TopCV" | [Terms & Conditions](https://itviec.com/blog/?p=4044) (01/07/2023) **mục 2.2:** nội dung không được truy xuất, tải xuống, sao chép **nếu không có sự đồng ý trước bằng văn bản**, trừ sử dụng cá nhân hợp lý |
+| Quyết định | **Được crawl** lịch sự cho học tập; không công khai lại dữ liệu; app demo chạy riêng, hiện trường đã trích + link gốc, không đăng lại nguyên mô tả | **Chưa crawl.** Gửi email xin phép (`love@itviec.com`); trong lúc chờ chỉ viết parser trên HTML mẫu tự soạn. Bị từ chối hoặc không trả lời thì chuyển sang phương án dự phòng (docs/11) |
 - Trích dẫn và tuân thủ giấy phép của mọi dataset công khai.
