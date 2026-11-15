@@ -89,12 +89,13 @@ Producer: `acks=all`, idempotent producer bật; value là JSON có `schema_vers
 | | `bronze.user_events` | `hours(event_ts)` | append (streaming) | |
 | Silver | `silver.job_postings` | `months(first_seen_ts)`, `bucket(16, job_uid)` | `MERGE INTO` (upsert theo `job_uid`) | Tin đã chuẩn hóa (BD, bằng quy tắc – ADR 0001 D2): lương min/max VND, tỉnh/thành (34), kinh nghiệm, cấp bậc, loại hợp đồng |
 | | `silver.job_postings_snapshot` | `days(snapshot_date)` | append | Trạng thái tin mỗi ngày → vòng đời tin, biến động lương |
+| | `silver.job_postings_history` | `bucket(8, job_uid)` | `MERGE INTO` theo `job_uid, version_no` | Lịch sử phiên bản của từng tin (SCD loại 2), dựng lại từ mọi lần crawl trong bronze |
 | | `silver.job_skills` | `bucket(16, job_uid)` | overwrite theo partition | `job_uid, skill_id, surface_form, span, confidence, extractor_version` |
 | | `silver.review_aspects` | `months(review_date)` | append | `company_key, aspect, polarity, confidence, model_version` |
 | | `silver.job_dedup` | `bucket(16, job_uid)` | `MERGE INTO` | `job_uid, dup_group_id, score, dedup_version` – image dedup của WM ghi (ADR 0001 D5) |
 | | `silver.reco_scores` | `days(generated_date)` | overwrite theo partition | điểm gợi ý WM5 – image của WM ghi |
 | Gold (dbt) | `dim_skill`, `dim_company`, `dim_location`, `fct_job_snapshot_daily` | theo thời gian | dbt model | Mô hình sao cho Trino |
-| | `mart_skill_demand_monthly`, `mart_salary_role_region`, `mart_skill_graph_edges`, `mart_company_aspect_sentiment`, `mart_job_reco_candidates` | | dbt model | Phục vụ trực tiếp các ca sử dụng |
+| | `mart_skill_demand_monthly`, `mart_salary_role_region`, `mart_hiring_weekly`, `mart_job_changes_weekly`, `mart_skill_graph_edges`, `mart_company_aspect_sentiment`, `mart_job_reco_candidates` | | dbt model | Phục vụ trực tiếp các ca sử dụng |
 
 Cột chi tiết của từng bảng: `schemas/tables/` trong repo `joblens`. `silver.job_skills`, `silver.job_dedup`, `silver.review_aspects`, `silver.reco_scores` do image của WM ghi, Airflow của BD chạy (ADR 0001 D3).
 

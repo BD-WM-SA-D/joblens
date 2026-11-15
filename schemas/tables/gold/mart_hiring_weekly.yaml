@@ -1,0 +1,64 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.mart_hiring_weekly
+version: 0.1.0
+status: draft
+description: Nhu cầu tuyển dụng theo tuần – số tin mới, mặt bằng lương của tin mới theo nguồn × tỉnh/thành × cấp bậc (UC002). Dựng tăng dần, chỉ tính lại các tuần có tin thay đổi.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model mart_hiring_weekly (incremental, delete+insert theo week)
+readers:
+- PTTKHT-joblens
+used_by:
+- UC002
+write_mode: dbt
+partition_spec:
+- months(week)
+primary_key:
+- week
+- source
+- location_code
+- level_code
+grain: tuần (bắt đầu thứ Hai) × nguồn × tỉnh/thành × cấp bậc
+columns:
+- name: week
+  type: date
+  nullable: false
+  description: Thứ Hai đầu tuần của first_seen_ts
+- name: source
+  type: string
+  nullable: false
+  description: Mã nguồn – lọc bỏ vietjobs (ngày = ngày nạp) và synthetic (mô phỏng) khi báo cáo thị trường
+- name: location_code
+  type: string
+  nullable: false
+  description: gold.dim_location; 'ALL' = toàn quốc; 'unknown' = không xác định
+- name: level_code
+  type: string
+  nullable: false
+  description: Cấp bậc; 'unknown' = chưa có
+- name: new_job_count
+  type: long
+  nullable: false
+  description: Số tin lần đầu thấy trong tuần (đếm theo job_uid)
+- name: salary_job_count
+  type: long
+  nullable: false
+  description: Số tin mới có lương
+- name: salary_median_vnd
+  type: long
+  nullable: true
+  description: Trung vị trung điểm khoảng lương của tin mới
+  unit: VND/tháng
+- name: negotiable_share
+  type: double
+  nullable: false
+  description: Tỉ lệ tin mới lương thỏa thuận
+  unit: tỉ lệ 0–1
+- name: updated_through
+  type: timestamp
+  nullable: false
+  description: max(updated_ts) của silver.job_postings lúc dựng tuần này – mốc cho lần chạy tăng dần sau
+notes:
+- 'Dòng location_code = ALL đếm distinct job_uid nên không đếm trùng tin nhiều địa điểm; cộng các tỉnh lại sẽ lớn hơn ALL.'
+- 'Trung vị null khi salary_job_count < 5.'
+- 'Chạy tăng dần: tuần có ít nhất một tin có updated_ts mới hơn updated_through lớn nhất thì tính lại cả tuần đó (delete+insert). --full-refresh dựng lại toàn bộ.'

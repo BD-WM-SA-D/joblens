@@ -2,6 +2,12 @@
 
 Chỉ ghi sự kiện đáng nhớ: đổi hợp đồng hoặc file cấu hình chung, ghép hệ thống, chốt số liệu, quyết định quan trọng. Việc thường ngày đã có lịch sử git. Mục mới đặt trên cùng, vài dòng là đủ – xem [repo-routing](docs/repo-routing.md), mục Nhật ký.
 
+## 2026-11-15 · <người thực hiện>
+
+- Contract mới (draft, chỉ thêm, không đổi bảng cũ): `silver.job_postings_history` 0.1.0 (lịch sử phiên bản tin – SCD loại 2), `gold.mart_hiring_weekly` 0.1.0, `gold.mart_job_changes_weekly` 0.1.0. Cập nhật `schemas/README.md`, docs/03. Người ghi: BD; người đọc: PTTKHT (lịch sử lương ở màn hình chi tiết tin, xu hướng tuyển theo tuần). Phục vụ góp ý của giảng viên IT4931 về biến đổi dữ liệu.
+- Ảnh hưởng: BD (viết job + dbt), PTTKHT (có thể đọc thêm, không bắt buộc) – đã nhắn nhóm: <chưa>.
+- AI: Claude Code – soạn contract; <người kiểm tra> đã kiểm tra
+
 ## 2026-10-12 (2) · Hoang Le
 
 - `job_posting.v1` 1.3.0: thêm `payload.date_posted` (TopCV có `datePosted` trong JSON-LD); `silver.job_postings` 0.2.0 thêm cột `posted_date`; `mart_skill_demand_monthly` tính tháng theo `posted_date`. Ảnh hưởng BD (map cột mới) – đã nhắn nhóm: <chưa>.

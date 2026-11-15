@@ -1,0 +1,66 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: gold.mart_job_changes_weekly
+version: 0.1.0
+status: draft
+description: Tin tuyển dụng thay đổi gì theo tuần – số lần đổi theo nhóm trường, tăng/giảm lương, tin đổi sau bao lâu (UC003). Đọc silver.job_postings_history; dựng tăng dần.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: dbt model mart_job_changes_weekly (incremental, delete+insert theo week)
+readers:
+- PTTKHT-joblens
+used_by:
+- UC003
+write_mode: dbt
+partition_spec:
+- months(week)
+primary_key:
+- week
+- source
+- changed_field
+grain: tuần (bắt đầu thứ Hai) × nguồn × nhóm trường thay đổi
+columns:
+- name: week
+  type: date
+  nullable: false
+  description: Thứ Hai đầu tuần của valid_from (lúc phiên bản mới xuất hiện)
+- name: source
+  type: string
+  nullable: false
+  description: Mã nguồn – synthetic là dữ liệu mô phỏng crawl lại, không phải số liệu thị trường
+- name: changed_field
+  type: string
+  nullable: false
+  description: "Nhóm trường: title, company, salary, location, level, experience, employment_type, deadline"
+- name: change_count
+  type: long
+  nullable: false
+  description: Số phiên bản mới có thay đổi ở nhóm trường này
+- name: job_count
+  type: long
+  nullable: false
+  description: Số tin khác nhau có thay đổi
+- name: salary_raise_count
+  type: long
+  nullable: true
+  description: Số lần trung điểm lương tăng (chỉ có ở changed_field = salary)
+- name: salary_cut_count
+  type: long
+  nullable: true
+  description: Số lần trung điểm lương giảm (chỉ có ở changed_field = salary)
+- name: salary_change_median_pct
+  type: double
+  nullable: true
+  description: Trung vị % thay đổi trung điểm lương so với phiên bản trước (chỉ khi cả hai phiên bản có lương)
+  unit: '%'
+- name: days_since_first_seen_median
+  type: double
+  nullable: false
+  description: Trung vị số ngày từ phiên bản 1 tới lần thay đổi
+  unit: ngày
+- name: updated_through
+  type: timestamp
+  nullable: false
+  description: max(updated_ts) của silver.job_postings_history lúc dựng tuần này
+notes:
+- 'Một phiên bản đổi nhiều nhóm trường được đếm ở mỗi nhóm.'
+- 'Chạy tăng dần như gold.mart_hiring_weekly: tính lại cả tuần có phiên bản mới/sửa.'

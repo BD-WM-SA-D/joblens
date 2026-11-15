@@ -1,0 +1,123 @@
+# Contract bảng – bản gốc ở repo joblens. Định dạng: schemas/tables/_contract.schema.json.
+# Đổi contract: PR vào joblens trước (docs/project-plan/09, quy tắc 1). status: draft = chờ ADR 0001 được duyệt.
+table: silver.job_postings_history
+version: 0.1.0
+status: draft
+description: Lịch sử thay đổi của từng tin (SCD loại 2) – mỗi phiên bản nội dung của một tin là một dòng, có khoảng hiệu lực valid_from/valid_to. Dựng lại từ mọi lần crawl trong bronze.jobs_raw nên đúng cả khi bản crawl đến trễ hoặc sai thứ tự.
+writer_repo: Big-Data-Storage-and-Processing-joblens
+writer_component: 'spark-jobs: silver_job_history (MERGE INTO theo job_uid + version_no)'
+readers:
+- Big-Data-Storage-and-Processing-joblens
+- PTTKHT-joblens
+used_by:
+- UC003
+- UC011
+write_mode: merge
+partition_spec:
+- bucket(8, job_uid)
+primary_key:
+- job_uid
+- version_no
+columns:
+- name: job_uid
+  type: string
+  nullable: false
+  description: sha1('<source>:<source_job_id>') – joblens_contracts.job_uid() (ADR 0001 D5)
+- name: version_no
+  type: int
+  nullable: false
+  description: Số thứ tự phiên bản của tin, bắt đầu từ 1, tăng theo valid_from
+- name: valid_from
+  type: timestamp
+  nullable: false
+  description: crawl_ts của lần crawl đầu tiên thấy trạng thái này
+- name: valid_to
+  type: timestamp
+  nullable: true
+  description: valid_from của phiên bản kế tiếp (không bao gồm); null = phiên bản hiện tại
+- name: is_current
+  type: boolean
+  nullable: false
+  description: true khi valid_to null – mỗi job_uid đúng một dòng true
+- name: change_type
+  type: string
+  nullable: false
+  description: "'new' (phiên bản 1) hoặc 'changed'"
+- name: changed_fields
+  type: list<string>
+  nullable: false
+  description: Tên các cột theo dõi khác phiên bản trước (rỗng với 'new')
+- name: source
+  type: string
+  nullable: false
+  description: Mã nguồn (topcv, itviec, vietjobs, synthetic)
+- name: title
+  type: string
+  nullable: false
+  description: Tiêu đề tin tại phiên bản này
+- name: company_key
+  type: string
+  nullable: true
+  description: Khóa công ty đã chuẩn hóa
+- name: salary_min_vnd
+  type: long
+  nullable: true
+  description: Lương tối thiểu
+  unit: VND/tháng
+- name: salary_max_vnd
+  type: long
+  nullable: true
+  description: Lương tối đa
+  unit: VND/tháng
+- name: salary_is_negotiable
+  type: boolean
+  nullable: false
+  description: Lương thỏa thuận
+- name: location_codes
+  type: list<string>
+  nullable: false
+  description: Mã tỉnh/thành (gold.dim_location), đã sắp xếp
+- name: level_code
+  type: string
+  nullable: true
+  description: Cấp bậc
+- name: experience_min_years
+  type: double
+  nullable: true
+  description: Kinh nghiệm tối thiểu
+  unit: năm
+- name: experience_max_years
+  type: double
+  nullable: true
+  description: Kinh nghiệm tối đa
+  unit: năm
+- name: employment_type_code
+  type: string
+  nullable: true
+  description: Hình thức làm việc
+- name: deadline
+  type: date
+  nullable: true
+  description: Hạn nộp
+- name: attr_hash
+  type: string
+  nullable: false
+  description: sha1 của các cột theo dõi – hai phiên bản liên tiếp luôn khác attr_hash
+- name: last_seen_ts
+  type: timestamp
+  nullable: false
+  description: crawl_ts của lần crawl cuối cùng trong phiên bản này
+- name: crawl_count
+  type: long
+  nullable: false
+  description: Số lần crawl rơi vào phiên bản này
+- name: updated_ts
+  type: timestamp
+  nullable: false
+  description: Thời điểm dòng được ghi/sửa lần cuối (gold tăng dần dùng cột này)
+notes:
+- 'Cột theo dõi: title, company_key, salary_min_vnd, salary_max_vnd, salary_is_negotiable, location_codes, level_code, experience_min_years, experience_max_years, employment_type_code, deadline. Sửa mô tả/yêu cầu/phúc lợi không tạo phiên bản mới (đã có content_hash ở silver.job_postings).'
+- 'Trạng thái quay lại giá trị cũ (A → B → A) là 3 phiên bản – đúng ngữ nghĩa SCD loại 2.'
+- 'Tin đóng (is_active = false ở silver.job_postings) không tạo phiên bản: đóng là suy luận (quá hạn, không thấy lại), không phải lần crawl.'
+- 'Partition ban đầu chỉ theo bucket(8, job_uid) (MERGE theo tin). Có thể thêm months(valid_from) bằng partition evolution khi gold đọc theo thời gian – không đổi contract cột.'
+- 'Tin source = vietjobs chỉ có một lần nạp nên chỉ có phiên bản 1; tin source = synthetic gồm dữ liệu mô phỏng crawl lại (spark-jobs/recrawl_sim.py) – không dùng làm số liệu thị trường.'
