@@ -31,8 +31,8 @@ Tài liệu gốc:
 2. **Tôn trọng dòng đánh dấu.** File có dòng đầu `ĐỒNG BỘ TỪ …` hoặc `SINH TỪ …` thì **không sửa tại chỗ**. Chỉ ra bản gốc cần sửa (thường ở `joblens/docs/project-plan/templates/` hoặc `joblens/schemas/`).
 3. **Thêm dòng đánh dấu** khi tạo file mục C (`ĐỒNG BỘ TỪ`), mục E (`LIÊN QUAN: <repo>/<file>`) hoặc file sinh từ schema (`SINH TỪ … @ vX.Y.Z`).
 4. **Đánh dấu việc dùng AI.** Khi commit, thêm dòng `AI: <công cụ> – <phần nào>` cuối commit message.
-   - Việc thường ngày không cần ghi `NHAT-KY.md`.
-   - Chỉ ghi nhật ký (vài dòng, mục mới trên cùng) khi đổi hợp đồng hoặc file cấu hình chung, khi ghép hệ thống hay chốt số liệu.
+   - Chỉ ghi quyết định đáng nhớ (đổi hợp đồng, ghép hệ thống, chốt số liệu) vào `joblens/NHAT-KY.md`, vài dòng, mục mới trên cùng.
+   - Nhật ký làm việc của repo không đưa lên nhánh chính (quy tắc 11 ở `joblens/docs/project-plan/09-quy-tac-lam-viec-chung.md`).
    - Nếu thay đổi chạm hợp đồng ở `joblens`, nhắc người dùng **nhắn nhóm chat**.
    - **Không tự điền tên người kiểm tra**, để `<người kiểm tra>`.
 
@@ -45,6 +45,7 @@ Tài liệu gốc:
   - Dữ liệu cá nhân (tên, email, SĐT, CV).
   - Slide hay tài liệu của giảng viên.
   - Output notebook.
+  - Nhật ký làm việc (nhật ký thí nghiệm, kết quả từng lần chạy, `NHAT-KY.md` của repo) và file hướng dẫn công cụ (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`) vào nhánh chính; giữ ở máy hoặc ở nhánh `nhat-ky`.
 - **Lách bộ chặn:**
   - Không dùng `--no-verify`.
   - Không sửa `.gitignore` hay `.pre-commit-config.yaml` để cho file cấm đi qua.
@@ -77,6 +78,19 @@ Tài liệu gốc:
 - Trong repo môn, nhóm được push thẳng `main`. Agent chỉ commit hoặc push khi người dùng yêu cầu.
 - Commit theo Conventional Commits, ví dụ `feat(crawler): thêm adapter ITviec`.
 - Ở repo `joblens` nên dùng nhánh và PR để CI chạy. Việc cần repo khác làm thì gợi ý mở issue `cross-repo` ở repo đó.
+
+## Viết tài liệu
+
+- README, `docs/` và ADR của repo viết như repo **độc lập**: không nêu tên hay mã môn, không nhắc hợp đồng chung hay repo khác.
+- Tập trung method (bài toán, baseline, phương pháp, lý do chọn, cách đánh giá, hạn chế). Chỉ ghi kết quả chính thức: phương pháp so với baseline trên tập kiểm tra. Không ghi kết quả phép thử đã bỏ.
+- Không đưa mã phiên bản nội bộ (v1, bản 0.x của guideline, nhãn, mô hình) vào file công khai.
+- Tài liệu mô tả không nêu tên file, đường dẫn dữ liệu hay tên bảng. Văn phong ngắn gọn, khách quan, dễ hiểu.
+
+## Refactor
+
+- Chạy `ruff` và `pytest` trước và sau; chỉ refactor khi đang xanh; không đổi hành vi; mỗi bước một commit.
+- Gom đoạn lặp vào module dùng chung, bỏ mã không dùng. Mã của thí nghiệm đã bỏ thì `git mv` vào `experiments/archive/`, không xóa.
+- Xóa file hay thư mục có sẵn thì hỏi người dùng trước. Chọn từng file khi `git add`.
 
 ## Trước khi báo xong
 

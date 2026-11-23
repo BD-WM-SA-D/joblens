@@ -6,7 +6,7 @@ Ba nhóm làm **song song**, mỗi nhóm một repo. Chỉ cần cẩn thận �
 
 - Push thẳng `main` hoặc dùng nhánh, tùy bạn. Không bắt buộc PR, không cần ai duyệt.
 - Commit message ghi rõ thay đổi gì, ví dụ `feat(crawler): thêm adapter ITviec`, `fix(dbt): sửa đơn vị lương`.
-- Việc thường ngày không cần ghi nhật ký, lịch sử git là đủ.
+- Việc thường ngày không cần ghi nhật ký, lịch sử git là đủ. Nhật ký làm việc không đưa lên nhánh chính.
 - Nếu dùng AI cho một phần đáng kể, thêm một dòng cuối commit message: `AI: <công cụ> – <phần nào>`.
 
 ## 2. Khi đụng chỗ nối giữa các repo
@@ -34,6 +34,14 @@ Pre-commit chặn sẵn phần lớn các trường hợp. Sau khi clone, chạy
 - Slide và tài liệu của giảng viên.
 
 Lỡ đẩy bí mật lên GitHub: đổi key ngay rồi báo nhóm.
+
+## 4. Viết tài liệu và refactor
+
+Chi tiết ở quy tắc 11 và 12 của [quy tắc làm việc chung](../09-quy-tac-lam-viec-chung.md).
+
+- README và `docs/` viết như repo độc lập, tập trung method, chỉ ghi kết quả chính thức, không có tên hay mã môn, không có mã phiên bản nội bộ.
+- Nhật ký thí nghiệm và nhật ký làm việc để ở máy hoặc nhánh `nhat-ky`, không để ở nhánh chính.
+- Refactor từng bước nhỏ, chạy `ruff` và `pytest` trước và sau, không đổi hành vi, không xóa nhầm file.
 
 ## Môi trường
 

@@ -27,7 +27,7 @@ Không có trong bảng thì hỏi: *giảng viên môn nào sẽ chấm file n�
 
 ## Cách làm việc (tóm tắt)
 
-- **Trong repo của mình:** làm tự do, push thẳng `main` cũng được, không cần PR hay ghi nhật ký.
+- **Trong repo của mình:** làm tự do, push thẳng `main` cũng được, không cần PR. Tài liệu chính thức viết như repo độc lập (quy tắc 11).
 - **Đụng chỗ nối** (file mục A ở repo CHUNG):
   - Sửa ở CHUNG trước.
   - Nhắn nhóm chat một câu và ghi một dòng `joblens/NHAT-KY.md`.
@@ -37,17 +37,18 @@ Không có trong bảng thì hỏi: *giảng viên môn nào sẽ chấm file n�
 
 Chi tiết đầy đủ: [quy tắc làm việc chung](project-plan/09-quy-tac-lam-viec-chung.md), quy tắc 1, 3 và 10.
 
-## Nhật ký `NHAT-KY.md`
+## Nhật ký
 
-Mỗi repo có một file nhật ký, **chỉ ghi các sự kiện đáng nhớ**. Việc thường ngày đã có lịch sử git.
+Hai loại, đặt ở hai nơi khác nhau.
 
-| Ghi khi | Ghi vào |
-|---|---|
-| Đổi hợp đồng (schema, contract, API) hoặc file cấu hình chung | `joblens/NHAT-KY.md` |
-| Ghép hệ thống, chốt số liệu báo cáo | `joblens/NHAT-KY.md` và nhật ký repo môn liên quan |
-| Quyết định quan trọng trong một repo (đổi hướng làm, bỏ một bài khai phá…) | Nhật ký của repo đó |
+| Loại | Ghi gì | Đặt ở đâu |
+|---|---|---|
+| **Nhật ký quyết định chung** | Đổi hợp đồng hoặc file cấu hình chung, ghép hệ thống, chốt số liệu, quyết định ảnh hưởng nhiều repo | `joblens/NHAT-KY.md` (vài dòng, mục mới trên cùng); quyết định lớn viết thành ADR |
+| **Nhật ký làm việc của một repo** | Nhật ký thí nghiệm, kết quả từng lần chạy, ghi chú trong lúc làm | **Không nằm ở nhánh chính.** Giữ ở máy hoặc đặt ở nhánh riêng `nhat-ky` (xem quy tắc 11) |
 
-Mẫu: mục mới đặt trên cùng, vài dòng là đủ.
+Lý do: repo môn nộp để chấm method, nên nhánh chính chỉ chứa mã, tài liệu và kết quả chính thức.
+
+Mẫu một mục ở `joblens/NHAT-KY.md`:
 
 ```markdown
 ## 2026-10-05 · <Họ tên>

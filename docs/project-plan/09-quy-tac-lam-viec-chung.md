@@ -118,16 +118,44 @@ Danh sách đầy đủ kèm schema/contract: `schemas/README.md` trong repo `jo
 
 - Quyết định ảnh hưởng nhiều repo ghi thành ADR ở `joblens/docs/adr/`. Quyết định chỉ trong một repo thì ghi ADR ở repo đó nếu cần cho báo cáo. Tất cả liệt kê trong `joblens/adr-index.md`.
 - Glossary chỉ có một bản duy nhất ở `joblens`.
-- **Nhật ký `NHAT-KY.md`** chỉ ghi khi:
-  - Đổi hợp đồng hoặc file cấu hình chung.
-  - Ghép hệ thống, chốt số liệu.
-  - Có quyết định đáng nhớ.
-
-  Việc thường ngày không cần ghi.
+- **Nhật ký quyết định.** Quyết định có ảnh hưởng tới nhiều repo (đổi hợp đồng, ghép hệ thống, chốt số liệu) ghi một dòng vào `joblens/NHAT-KY.md`, quyết định lớn viết thành ADR. Nhật ký làm việc của từng repo (nhật ký thí nghiệm, kết quả từng lần chạy) không nằm ở nhánh chính, xem mục 11.
 - **Dùng AI:**
   - Ghi một dòng `AI: <công cụ> – <phần nào>` cuối commit message.
   - Riêng repo PTTKHT ghi thêm vào `docs/ai-log.md`, vì Human-AI collaboration là phần được chấm của môn Phân tích thiết kế hệ thống.
 - Họp ngắn khi cần (gợi ý mỗi tuần 15–30 phút): việc xong, việc bị chặn, hợp đồng sắp đổi.
+
+## 11. Viết tài liệu và giữ repo gọn
+
+Mỗi repo môn là bài nộp của một môn và được chấm chủ yếu ở **method**: chọn phương pháp nào, vì sao, đánh giá ra sao. Tài liệu chính thức của repo (README, `docs/`, ADR) viết theo các quy tắc sau.
+
+**Nội dung**
+- Viết như một repo **độc lập**. Không nêu tên hay mã môn học, không nhắc hợp đồng chung, repo hoặc môn khác. Chỗ nối giữa các repo nằm ở `joblens`, không nằm ở tài liệu của repo môn.
+- Tập trung vào method: bài toán, baseline, phương pháp chính, lý do chọn, cách đánh giá, hạn chế.
+- Chỉ ghi **kết quả chính thức**: phương pháp so với baseline trên tập kiểm tra. Không ghi kết quả của phép thử đã bỏ, số trung gian hay quá trình làm.
+- Không đưa mã phiên bản nội bộ (v1, bản 0.x của guideline, nhãn, mô hình) vào file công khai. Chỉ giữ phiên bản phát hành chính thức và tên hợp đồng.
+- Tài liệu mô tả không nêu tên file, đường dẫn dữ liệu hay tên bảng; lệnh chạy và cấu trúc thư mục để ở README.
+- Không bịa số liệu, tên, MSSV. Chưa có thì ghi `<...>`.
+
+**Văn phong:** ngắn gọn, khách quan, dễ hiểu cho người ngoài nhóm. Văn bản tiếng Anh nộp trường: viết tự nhiên, tránh gạch ngang dài, từ to tát và liệt kê ba ý song song liên tục.
+
+**Nhật ký làm việc không nằm ở nhánh chính.** Nhật ký thí nghiệm, kết quả từng lần chạy, `NHAT-KY.md` của repo và các file hướng dẫn công cụ (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`) chỉ để phục vụ lúc làm. Có hai cách, chọn một:
+- Giữ ở máy cá nhân, thêm vào `.git/info/exclude`.
+- Đặt ở nhánh riêng không chung lịch sử với `main` (ví dụ `nhat-ky`, dùng `git worktree add --orphan`). Nhánh vẫn công khai nếu repo công khai.
+
+Đã push lên `main` thì không viết lại lịch sử; chỉ gỡ khỏi ngọn bằng `git rm --cached`.
+
+## 12. Refactor code
+
+Mỗi người dọn code trong repo của mình theo danh sách sau. Làm từng bước nhỏ, mỗi bước một commit.
+
+1. **Chạy kiểm tra trước khi bắt đầu:** `ruff check`, `ruff format --check`, `pytest`. Chỉ refactor khi đang xanh.
+2. **Gom đoạn lặp:** hàm dùng ở nhiều module (đọc JSONL, băm, bootstrap) đưa vào một module dùng chung như `common/`. Nếu code chạy trong image Docker thì thêm thư mục mới vào lệnh `COPY` của Dockerfile.
+3. **Bỏ mã không dùng:** dùng `vulture` hoặc tìm bằng `git grep`. Bỏ hàm, biến, hằng không có nơi gọi.
+4. **Mã của thí nghiệm đã bỏ:** không xóa. Chuyển bằng `git mv` vào `experiments/archive/` và sửa các lệnh tham chiếu.
+5. **Inline hàm bọc một dòng** khi chỉ gọi hàm khác.
+6. **Không đổi hành vi.** Refactor và sửa lỗi tách thành hai commit riêng.
+7. **Trước khi commit:** `ruff`, `pytest`, thử import toàn bộ module; kiểm tra `git status` để chắc không xóa nhầm file; chọn từng file khi `git add`, không dùng `git add .` nếu trong thư mục có file nhật ký.
+8. Dọn tài liệu cùng đợt theo mục 11 và commit riêng.
 
 ## Chú ý: thứ thay đổi nhưng không đưa lên GitHub
 
