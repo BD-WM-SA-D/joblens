@@ -32,6 +32,7 @@ Chi tiết cột nằm trong từng file. Định dạng file: [`tables/_contrac
 | `bronze.jobs_raw`, `bronze.reviews_raw`, `bronze.user_events` | Big-Data | Web-mining | WM1–3, WM5 |
 | `silver.job_postings`, `silver.job_postings_snapshot` | Big-Data | Web-mining, PTTKHT | UC001, UC003, UC011, UC012 |
 | `silver.job_skills` | Web-mining (image skill-extractor) | Big-Data, PTTKHT | UC002, UC004, UC011–013 |
+| `silver.job_benefits` | Web-mining (image benefit-extractor) | Big-Data, PTTKHT | UC004, UC011, UC012 (gợi ý theo nguyện vọng) |
 | `silver.job_dedup` | Web-mining (image job-dedup) | Big-Data, PTTKHT | UC001–003, UC011, UC012 |
 | `silver.review_aspects` | Web-mining (image absa-scorer) | Big-Data, PTTKHT | UC005, UC011 |
 | `silver.reco_scores` | Web-mining (image recsys-scorer) | Big-Data | WM5 (đánh giá offline – ADR 0002) |
